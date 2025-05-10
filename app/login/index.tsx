@@ -16,19 +16,11 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 export default function LoginScreen(): React.JSX.Element {
   const navigation = useNavigation<NavigationProp>();
 
-  const handleLoginPress = () => {
-    navigation.navigate('Login');
-  };
-
-  const handleCadastroPress = (): void => {
-    console.log('Cadastro pressionado');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
-        <Text style={styles.title}>TESTE</Text>
+        <Text style={styles.title}>CADASTRO</Text>
       </View>
     </SafeAreaView>
   );
