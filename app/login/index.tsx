@@ -1,68 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar
+  StyleSheet, Text, View, TouchableOpacity,
+  SafeAreaView, StatusBar
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export default function LoginScreen() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+type RootStackParamList = {
+  Home: undefined;
+  Login: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+export default function LoginScreen(): React.JSX.Element {
+  const navigation = useNavigation<NavigationProp>();
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
-        <Text style={styles.title}>Login</Text>
-
-        <View style={styles.inputContainer}>
-          <Feather name="user" size={20} color="#555" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} color="#555" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry={!mostrarSenha}
-          />
-          <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather
-              name={mostrarSenha ? 'eye' : 'eye-off'}
-              size={20}
-              color="#555"
-            />
-          </TouchableOpacity>
-        </View>
-
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/')}
-        >
-          <Text style={styles.backText}>← Voltar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>CADASTRO</Text>
       </View>
     </SafeAreaView>
   );
@@ -71,7 +29,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
@@ -79,41 +37,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 30,
   },
-
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 40,
-    alignItems: 'center',
+    marginBottom: 60,
     color: '#000',
-  },
-  inputContainer: {
-    backgroundColor: '#dbd9d9',
-    borderRadius: 25,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 65,
-    marginBottom: 15,
-    height: 50,
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-  },
-
-  backButton: {
-    marginBottom: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backText: {
-    color: '#2E2E54',
-    fontSize: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   button: {
     backgroundColor: '#2E2E54',
@@ -121,6 +49,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 30,
     alignItems: 'center',
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
     maxWidth: 400,
   },
   buttonText: {
