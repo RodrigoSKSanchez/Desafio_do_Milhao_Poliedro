@@ -8,9 +8,11 @@ import {
   SafeAreaView,
   StatusBar
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 
 export default function CadastroScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -62,6 +64,13 @@ export default function CadastroScreen() {
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push('/')}
+        >
+          <Text style={styles.backText}>← Voltar</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
@@ -73,12 +82,13 @@ export default function CadastroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 30,
+    alignItems: 'center',
   },
   title: {
     fontSize: 26,
@@ -87,11 +97,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   inputContainer: {
-    backgroundColor: '#eee',
+    backgroundColor: '#dbd9d9',
     borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 65,
     marginBottom: 15,
     height: 50,
   },
@@ -102,6 +112,19 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
+
+  backButton: {
+    marginBottom: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backText: {
+    color: '#2E2E54',
+    fontSize: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   button: {
     backgroundColor: '#2E2E54',
     width: '100%',
