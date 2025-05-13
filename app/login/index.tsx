@@ -1,26 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity,
-  SafeAreaView, StatusBar
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
-type RootStackParamList = {
-  Home: undefined;
-  Login: undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
-
-export default function LoginScreen(): React.JSX.Element {
-  const navigation = useNavigation<NavigationProp>();
+export default function LoginScreen() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
-        <Text style={styles.title}>CADASTRO</Text>
+        <Text style={styles.title}>Login</Text>
+
+        <View style={styles.inputContainer}>
+          <Feather name="user" size={20} color="#555" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Feather name="lock" size={20} color="#555" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry={!mostrarSenha}
+          />
+          <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
+            <Feather
+              name={mostrarSenha ? 'eye' : 'eye-off'}
+              size={20}
+              color="#555"
+            />
+          </TouchableOpacity>
+        </View>
+
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push('/')}
+        >
+          <Text style={styles.backText}>← Voltar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -29,7 +71,7 @@ export default function LoginScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f3f3',
   },
   content: {
     flex: 1,
@@ -37,11 +79,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 30,
   },
+
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 60,
+    marginBottom: 40,
+    alignItems: 'center',
     color: '#000',
+  },
+  inputContainer: {
+    backgroundColor: '#dbd9d9',
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 65,
+    marginBottom: 15,
+    height: 50,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+  },
+
+  backButton: {
+    marginBottom: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backText: {
+    color: '#2E2E54',
+    fontSize: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     backgroundColor: '#2E2E54',
@@ -49,12 +121,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 30,
     alignItems: 'center',
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
     maxWidth: 400,
   },
   buttonText: {
