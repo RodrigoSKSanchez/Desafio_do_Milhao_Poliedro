@@ -13,7 +13,7 @@ export default function HomeScreen(): React.JSX.Element {
   };
 
   const handleCadastroPress = (): void => {
-    console.log('Cadastro pressionado');
+    router.push('/cadastro');
   };
 
   return (
