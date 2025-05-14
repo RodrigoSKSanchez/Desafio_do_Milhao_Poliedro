@@ -5,8 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
-  StatusBar
+  SafeAreaView, StatusBar, Image 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -21,6 +20,13 @@ export default function LoginScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
+
+              <Image
+                source={require('../../assets/images/PoliedroLogo.jpg')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+
         <Text style={styles.title}>Login</Text>
 
         <View style={styles.inputContainer}>
@@ -129,4 +135,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+
+    logo: {
+    width: 175,
+    height: 175,
+    marginBottom: 80,
+  },
+
 });

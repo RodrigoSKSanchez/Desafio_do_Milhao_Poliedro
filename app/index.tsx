@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
-  SafeAreaView, StatusBar
+  SafeAreaView, StatusBar,Image 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -20,6 +20,14 @@ export default function HomeScreen(): React.JSX.Element {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
+
+      <Image
+        source={require('../assets/images/PoliedroLogo.jpg')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      
+
         <Text style={styles.title}>Show do Milhão</Text>
         
         <TouchableOpacity 
@@ -76,4 +84,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+
+  logo: {
+    width: 175,
+    height: 175,
+    marginBottom: 80,
+  },
+
 });
