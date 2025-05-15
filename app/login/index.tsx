@@ -29,7 +29,7 @@ export default function LoginScreen() {
 
         <Text style={styles.title}>Login</Text>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainerEmail}>
           <Feather name="user" size={20} color="#555" style={styles.icon} />
           <TextInput
             style={styles.input}
@@ -37,20 +37,21 @@ export default function LoginScreen() {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-          />
+          />  
+          
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainerSenha}>
           <Feather name="lock" size={20} color="#555" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Senha"
+            placeholder="    Senha"
             value={senha}
             onChangeText={setSenha}
             secureTextEntry={!mostrarSenha}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather
+            <Feather style = {styles.olho}
               name={mostrarSenha ? 'eye' : 'eye-off'}
               size={20}
               color="#555"
@@ -93,12 +94,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: '#000',
   },
-  inputContainer: {
+  inputContainerEmail: {
     backgroundColor: '#dbd9d9',
     borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 65,
+    gap: 20,
+    paddingHorizontal: 70,
+    marginBottom: 15,
+    height: 50,
+  },
+
+  inputContainerSenha: {
+    backgroundColor: '#dbd9d9',
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 70,
     marginBottom: 15,
     height: 50,
   },
