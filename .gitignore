@@ -37,3 +37,5 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+_login_banco_de_dados.py
+__pycache__
