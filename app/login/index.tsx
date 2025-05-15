@@ -51,7 +51,7 @@ export default function LoginScreen() {
             secureTextEntry={!mostrarSenha}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather style = {styles.olho}
+            <Feather
               name={mostrarSenha ? 'eye' : 'eye-off'}
               size={20}
               color="#555"

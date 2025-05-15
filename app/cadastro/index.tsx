@@ -34,7 +34,7 @@ export default function CadastroScreen() {
 
         <Text style={styles.title}>Cadastro</Text>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainerEmail}>
           <Feather name="user" size={20} color="#555" style={styles.icon} />
           <TextInput
             style={styles.input}
@@ -45,11 +45,11 @@ export default function CadastroScreen() {
           />
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainerSenha}>
           <Feather name="lock" size={20} color="#555" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Senha"
+            placeholder="    Senha"
             value={senha}
             onChangeText={setSenha}
             secureTextEntry={!mostrarSenha}
@@ -59,11 +59,11 @@ export default function CadastroScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainerSenha}>
           <Feather name="lock" size={20} color="#555" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Confirme sua senha"
+            placeholder="    Confirme sua senha"
             value={confirmarSenha}
             onChangeText={setConfirmarSenha}
             secureTextEntry={!mostrarConfirmar}
@@ -105,15 +105,28 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     color: '#000',
   },
-  inputContainer: {
+
+  inputContainerEmail: {
     backgroundColor: '#dbd9d9',
     borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 65,
+    gap: 20,
+    paddingHorizontal: 70,
     marginBottom: 15,
     height: 50,
   },
+
+  inputContainerSenha: {
+    backgroundColor: '#dbd9d9',
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 70,
+    marginBottom: 15,
+    height: 50,
+  },
+
   icon: {
     marginRight: 10,
   },
