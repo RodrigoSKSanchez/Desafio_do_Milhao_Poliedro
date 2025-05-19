@@ -2,8 +2,19 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from banco_de_dados.bd import Conexao
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Adiciona o middleware de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou use ["http://localhost:8081"] se quiser restringir
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class AlunoCadastro(BaseModel):
     usuario_aluno: str

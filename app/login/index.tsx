@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -5,28 +6,61 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView, StatusBar, Image 
+  SafeAreaView,
+  StatusBar,
+  Image,
+  Modal
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mensagemErro, setMensagemErro] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const mostrarAlerta = (mensagem: string) => {
+    setMensagemErro(mensagem);
+    setModalVisible(true);
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usuario_aluno: email,
+          senha_aluno: senha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push('/');
+      } else {
+        mostrarAlerta(data.detail || 'Credenciais inválidas');
+      }
+    } catch (error) {
+      mostrarAlerta('Não foi possível conectar ao servidor');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.content}>
-
-              <Image
-                source={require('../../assets/images/PoliedroLogo.jpg')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
+        <Image
+          source={require('../../assets/images/PoliedroLogo.jpg')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
         <Text style={styles.title}>Login</Text>
 
@@ -38,8 +72,7 @@ export default function LoginScreen() {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-          />  
-          
+          />
         </View>
 
         <View style={styles.inputContainerSenha}>
@@ -60,18 +93,25 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/')}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
           <Text style={styles.backText}>← Voltar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalText}>{mensagemErro}</Text>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -87,7 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 30,
   },
-
   title: {
     fontSize: 26,
     fontWeight: 'bold',
@@ -105,7 +144,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     height: 50,
   },
-
   inputContainerSenha: {
     backgroundColor: '#dbd9d9',
     borderRadius: 25,
@@ -123,7 +161,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
   },
-
   backButton: {
     marginBottom: 16,
     alignItems: 'center',
@@ -148,11 +185,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-
-    logo: {
+  logo: {
     width: 175,
     height: 175,
     marginBottom: 80,
   },
-
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    padding: 30,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#2E2E54',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
