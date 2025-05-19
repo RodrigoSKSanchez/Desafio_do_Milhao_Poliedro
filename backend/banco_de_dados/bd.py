@@ -8,20 +8,17 @@ class Conexao:
         "user": usuario,
         "password": senha,
         "database": "defaultdb",
-        "port": "3306",
+        "port": "3306"
     }
 
+    @staticmethod
     def consultar(func):
-        """Todas as funções que utilizam uma conexão com o banco de dados devem ter essa função como decorator.
-        @consultar é responsável por abrir e fechar uma conexão com o banco de dados."""
+        from functools import wraps
         @wraps(func)
-        def criar_consulta(self, *args):        
+        def criar_consulta(*args, **kwargs):
             with mysql.connector.connect(**Conexao.banco_de_dados) as acessar_banco:
                 consulta = acessar_banco.cursor()
-                if len(args) == 0:
-                    resultado = func(self, consulta)   
-                else:
-                    resultado = func(self, consulta, args)
+                resultado = func(consulta, *args, **kwargs)
                 consulta.close()
                 acessar_banco.commit()
                 return resultado
