@@ -43,7 +43,7 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/');
+        router.push('/jogo_menu');
       } else {
         mostrarAlerta(data.detail || 'Credenciais inválidas');
       }
