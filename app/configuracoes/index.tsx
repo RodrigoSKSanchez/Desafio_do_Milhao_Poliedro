@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginBottom: 30,
+    maxWidth: 400,
   },
   slider: {
     flex: 1,
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginBottom: 30,
+    maxWidth: 150,
   },
   temaTexto: {
     textDecorationLine: 'underline',
