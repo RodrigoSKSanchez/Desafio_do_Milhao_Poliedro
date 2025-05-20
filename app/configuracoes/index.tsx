@@ -28,9 +28,6 @@ export default function ConfiguracoesScreen() {
     <View style={[styles.container, { backgroundColor: tema.fundo }]}>
       <View style={styles.topBar}>
         <Text style={[styles.titulo, { color: tema.texto }]}>Configurações</Text>
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="person-outline" size={24} color="#000" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.sliderContainer}>
@@ -95,54 +92,59 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, 
   },
+
   topBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 100,
   },
+
   titulo: {
     fontSize: 22,
     fontWeight: 'bold',
+    alignSelf: 'center',
   },
-  iconButton: {
-    backgroundColor: '#FDD3E4',
-    borderRadius: 20,
-    padding: 10,
-  },
+
   sliderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     marginBottom: 30,
-    maxWidth: 400,
+    alignSelf: 'center',
   },
+
   slider: {
     flex: 1,
   },
+  
   sliderText: {
     width: 50,
     textAlign: 'right',
   },
+
   temaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    marginBottom: 30,
+    marginBottom: 80,
     maxWidth: 150,
+    alignSelf: 'center',
+
   },
   temaTexto: {
     textDecorationLine: 'underline',
     fontSize: 16,
+    marginLeft: 10,
   },
   mudarSenhaBotao: {
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 20,
     alignItems: 'center',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     marginBottom: 40,
   },
   mudarSenhaTexto: {
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 20,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   voltarText: {
     color: '#fff',
