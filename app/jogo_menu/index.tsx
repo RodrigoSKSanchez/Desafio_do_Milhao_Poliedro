@@ -46,15 +46,17 @@ export default function JogoScreen() {
           <FontAwesome name="shopping-bag" size={24} color="#000" />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.voltarButton}
+        <TouchableOpacity style={styles.voltarButton}
           onPress={() => setModalVisible(true)}
         >
           <Text style={styles.voltarText}>VOLTAR</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.configButton}>
+      <TouchableOpacity
+        style={styles.configButton}
+        onPress={() => router.push('/configuracoes')}
+      >
         <Ionicons name="settings-outline" size={24} color="#000" />
       </TouchableOpacity>
 
@@ -88,7 +90,6 @@ export default function JogoScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -106,20 +107,15 @@ const styles = StyleSheet.create({
   olaText: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 80,
-    alignItems: 'center',
-
   },
   nomeAluno: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'normal',
   },
   iconButton: {
     backgroundColor: '#FDD3E4',
     borderRadius: 20,
     padding: 10,
-    marginBottom: 80,
-    marginLeft: 90,
   },
   buttonContainer: {
     width: '100%',
@@ -147,7 +143,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     alignItems: 'center',
     maxWidth: 500,
-
   },
   voltarButton: {
     width: '100%',
