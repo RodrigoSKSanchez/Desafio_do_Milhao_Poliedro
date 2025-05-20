@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import {
   View,
   Text,
@@ -15,6 +16,7 @@ import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
+  const { theme } = useTheme();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
