@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
-
 import {
   View,
   Text,
@@ -13,7 +11,6 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function JogoScreen() {
-  const { theme } = useTheme();
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [nomeAluno, setNomeAluno] = useState('');

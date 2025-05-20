@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +12,6 @@ import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 
 export default function ConfiguracoesScreen() {
-  const { theme } = useTheme();
   const router = useRouter();
   const scheme = useColorScheme();
   const [volume, setVolume] = useState(100);

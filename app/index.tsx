@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useTheme } from './context/ThemeContext';
-
+import React from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
   SafeAreaView, StatusBar,Image 
@@ -8,7 +6,6 @@ import {
 import { useRouter } from 'expo-router';
 
 export default function HomeScreen(): React.JSX.Element {
-  const { theme } = useTheme();
   const router = useRouter();
 
   const handleLoginPress = () => {
