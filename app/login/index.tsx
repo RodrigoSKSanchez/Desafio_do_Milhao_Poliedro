@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -9,10 +8,11 @@ import {
   SafeAreaView,
   StatusBar,
   Image,
-  Modal
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -31,9 +31,7 @@ export default function LoginScreen() {
     try {
       const response = await fetch('http://127.0.0.1:8000/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           usuario_aluno: email,
           senha_aluno: senha,
@@ -43,6 +41,8 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        const nome = email.split('@')[0]; // pegar só o nome antes do @
+        await AsyncStorage.setItem('usuario_aluno', nome);
         router.push('/jogo_menu');
       } else {
         mostrarAlerta(data.detail || 'Credenciais inválidas');
@@ -106,7 +106,10 @@ export default function LoginScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalBox}>
             <Text style={styles.modalText}>{mensagemErro}</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.modalButton}
+            >
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
           </View>

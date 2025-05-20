@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,17 +8,26 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function JogoScreen() {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
+  const [nomeAluno, setNomeAluno] = useState('');
+
+  useEffect(() => {
+    const carregarNome = async () => {
+      const nome = await AsyncStorage.getItem('usuario_aluno');
+      if (nome) setNomeAluno(nome);
+    };
+    carregarNome();
+  }, []);
 
   return (
     <View style={styles.container}>
-      {/* Topo com saudação e ícone de perfil */}
       <View style={styles.topBar}>
         <Text style={styles.olaText}>
-          Olá <Text style={styles.nomeAluno}>(nome do aluno)</Text>
+          Olá <Text style={styles.nomeAluno}>{nomeAluno}</Text>
         </Text>
 
         <TouchableOpacity style={styles.iconButton}>
@@ -26,7 +35,6 @@ export default function JogoScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Botões principais */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.jogarButton}>
           <Text style={styles.buttonText}>Jogar</Text>
@@ -46,12 +54,10 @@ export default function JogoScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Configuração (ícone no canto) */}
       <TouchableOpacity style={styles.configButton}>
         <Ionicons name="settings-outline" size={24} color="#000" />
       </TouchableOpacity>
 
-      {/* Modal de confirmação */}
       <Modal
         transparent
         visible={modalVisible}
@@ -82,6 +88,7 @@ export default function JogoScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -91,14 +98,16 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 40,
+    paddingHorizontal: 10,
   },
   olaText: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 80,
+    alignItems: 'center',
 
   },
   nomeAluno: {
