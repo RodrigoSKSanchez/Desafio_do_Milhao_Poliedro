@@ -50,6 +50,12 @@ Join our community of developers creating universal apps.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
 
+pip 
+
+pip install mysql-connector-python
+pip install fastapi[standard]
+
+
 Rodar back
 
 - cd backend
