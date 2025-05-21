@@ -62,3 +62,6 @@ cd backend
 python -m uvicorn main:app --reload
 
 LEMBRAR DE ADICIONAR O _login_banco_de_dados
+
+usuario = ""
+senha = ""
