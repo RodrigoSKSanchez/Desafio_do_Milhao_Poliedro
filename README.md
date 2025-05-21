@@ -58,5 +58,5 @@ pip install fastapi[standard]
 
 Rodar back
 
-- cd backend
-- python -m uvicorn main:app --reload
+cd backend
+python -m uvicorn main:app --reload
