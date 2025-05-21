@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -5,17 +6,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  useColorScheme,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function ConfiguracoesScreen() {
   const router = useRouter();
-  const scheme = useColorScheme();
   const [volume, setVolume] = useState(100);
-  const [modoEscuro, setModoEscuro] = useState(scheme === 'dark');
+  const { theme, toggleTheme } = useTheme();
+
+  const modoEscuro = theme === 'dark';
 
   const tema = {
     fundo: modoEscuro ? '#000' : '#fff',
@@ -56,10 +58,7 @@ export default function ConfiguracoesScreen() {
         <Text style={[styles.sliderText, { color: tema.texto }]}>{volume} %</Text>
       </View>
 
-      <TouchableOpacity
-        onPress={() => setModoEscuro(!modoEscuro)}
-        style={styles.temaContainer}
-      >
+      <TouchableOpacity onPress={toggleTheme} style={styles.temaContainer}>
         <Ionicons
           name={modoEscuro ? 'moon-outline' : 'sunny-outline'}
           size={24}
@@ -92,22 +91,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
-
   topBar: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 100,
   },
-
   titulo: {
     fontSize: 22,
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-
   sliderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -115,16 +111,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     alignSelf: 'center',
   },
-
   slider: {
     flex: 1,
   },
-  
   sliderText: {
     width: 50,
     textAlign: 'right',
   },
-
   temaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,7 +125,6 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     maxWidth: 150,
     alignSelf: 'center',
-
   },
   temaTexto: {
     textDecorationLine: 'underline',
