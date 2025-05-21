@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,6 +22,16 @@ export default function LoginScreen() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mensagemErro, setMensagemErro] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const tema = {
+    fundo: isDark ? '#000' : '#F7F7F7',
+    texto: isDark ? '#fff' : '#000',
+    inputBg: isDark ? '#444' : '#dbd9d9',
+    modalBg: isDark ? '#222' : '#fff',
+    modalTexto: isDark ? '#fff' : '#000',
+  };
 
   const mostrarAlerta = (mensagem: string) => {
     setMensagemErro(mensagem);
@@ -41,7 +52,7 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        const nome = email.split('@')[0]; // pegar só o nome antes do @
+        const nome = email.split('@')[0];
         await AsyncStorage.setItem('usuario_aluno', nome);
         router.push('/jogo_menu');
       } else {
@@ -53,33 +64,35 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
       <View style={styles.content}>
         <Image
-          source={require('../../assets/images/PoliedroLogo.jpg')}
+          source={require('../../assets/images/PoliedroLogo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
 
-        <Text style={styles.title}>Login</Text>
+        <Text style={[styles.title, { color: tema.texto }]}>Login</Text>
 
-        <View style={styles.inputContainerEmail}>
-          <Feather name="user" size={20} color="#555" style={styles.icon} />
+        <View style={[styles.inputContainerEmail, { backgroundColor: tema.inputBg }]}>
+          <Feather name="user" size={20} color="#aaa" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: tema.texto }]}
             placeholder="Email"
+            placeholderTextColor="#888"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
           />
         </View>
 
-        <View style={styles.inputContainerSenha}>
-          <Feather name="lock" size={20} color="#555" style={styles.icon} />
+        <View style={[styles.inputContainerSenha, { backgroundColor: tema.inputBg }]}>
+          <Feather name="lock" size={20} color="#aaa" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: tema.texto }]}
             placeholder="    Senha"
+            placeholderTextColor="#888"
             value={senha}
             onChangeText={setSenha}
             secureTextEntry={!mostrarSenha}
@@ -88,13 +101,13 @@ export default function LoginScreen() {
             <Feather
               name={mostrarSenha ? 'eye' : 'eye-off'}
               size={20}
-              color="#555"
+              color="#888"
             />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
-          <Text style={styles.backText}>← Voltar</Text>
+          <Text style={[styles.backText, { color: '#2E2E54' }]}>← Voltar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -104,8 +117,8 @@ export default function LoginScreen() {
 
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalText}>{mensagemErro}</Text>
+          <View style={[styles.modalBox, { backgroundColor: tema.modalBg }]}>
+            <Text style={[styles.modalText, { color: tema.modalTexto }]}>{mensagemErro}</Text>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={styles.modalButton}
@@ -118,6 +131,7 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

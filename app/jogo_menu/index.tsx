@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
+  Modal,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Modal,
+  View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function JogoScreen() {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [nomeAluno, setNomeAluno] = useState('');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const carregarNome = async () => {
@@ -23,15 +26,22 @@ export default function JogoScreen() {
     carregarNome();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Text style={styles.olaText}>
-          Olá <Text style={styles.nomeAluno}>{nomeAluno}</Text>
-        </Text>
+  const tema = {
+    fundo: isDark ? '#000' : '#FAFAFA',
+    texto: isDark ? '#fff' : '#000',
+    iconeBg: isDark ? '#333' : '#FDD3E4',
+    voltar: isDark ? '#555' : '#BDBDBD',
+    modalBg: isDark ? '#222' : '#fff',
+    modalBtn: isDark ? '#444' : '#eee',
+  };
 
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="person-outline" size={24} color="#000" />
+  return (
+    <View style={[styles.container, { backgroundColor: tema.fundo }]}>
+      <View style={styles.topBar}>
+        <Text style={[styles.olaText, { color: tema.texto }]}>Olá <Text style={styles.nomeAluno}>{nomeAluno}</Text></Text>
+
+        <TouchableOpacity style={[styles.iconButton, { backgroundColor: tema.iconeBg }]}>
+          <Ionicons name="person-outline" size={24} color={tema.texto} />
         </TouchableOpacity>
       </View>
 
@@ -46,9 +56,7 @@ export default function JogoScreen() {
           <FontAwesome name="shopping-bag" size={24} color="#000" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.voltarButton}
-          onPress={() => setModalVisible(true)}
-        >
+        <TouchableOpacity style={[styles.voltarButton, { backgroundColor: tema.voltar }]} onPress={() => setModalVisible(true)}>
           <Text style={styles.voltarText}>VOLTAR</Text>
         </TouchableOpacity>
       </View>
@@ -57,7 +65,7 @@ export default function JogoScreen() {
         style={styles.configButton}
         onPress={() => router.push('/configuracoes')}
       >
-        <Ionicons name="settings-outline" size={24} color="#000" />
+        <Ionicons name="settings-outline" size={24} color={tema.texto} />
       </TouchableOpacity>
 
       <Modal
@@ -67,20 +75,20 @@ export default function JogoScreen() {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalText}>Deseja voltar à tela inicial?</Text>
+          <View style={[styles.modalBox, { backgroundColor: tema.modalBg }]}>
+            <Text style={[styles.modalText, { color: tema.texto }]}>Deseja voltar à tela inicial?</Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
-                style={styles.modalBtn}
+                style={[styles.modalBtn, { backgroundColor: tema.modalBtn }]}
               >
-                <Text>Cancelar</Text>
+                <Text style={{ color: tema.texto }}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => router.replace('/')}
-                style={styles.modalBtn}
+                style={[styles.modalBtn, { backgroundColor: tema.modalBtn }]}
               >
-                <Text>Sim</Text>
+                <Text style={{ color: tema.texto }}>Sim</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -93,7 +101,6 @@ export default function JogoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
     paddingTop: 60,
     paddingHorizontal: 30,
   },
@@ -113,7 +120,6 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
   },
   iconButton: {
-    backgroundColor: '#FDD3E4',
     borderRadius: 20,
     padding: 10,
   },
@@ -146,7 +152,6 @@ const styles = StyleSheet.create({
   },
   voltarButton: {
     width: '100%',
-    backgroundColor: '#BDBDBD',
     borderRadius: 20,
     paddingVertical: 15,
     alignItems: 'center',
@@ -179,7 +184,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalBox: {
-    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 30,
     alignItems: 'center',
@@ -198,7 +202,6 @@ const styles = StyleSheet.create({
   modalBtn: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#eee',
     borderRadius: 10,
   },
 });

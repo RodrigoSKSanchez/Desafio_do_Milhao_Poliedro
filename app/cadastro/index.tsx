@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -13,6 +12,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function CadastroScreen() {
   const router = useRouter();
@@ -24,6 +24,16 @@ export default function CadastroScreen() {
   const [mensagemModal, setMensagemModal] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSucesso, setModalSucesso] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const tema = {
+    fundo: isDark ? '#000' : '#F7F7F7',
+    texto: isDark ? '#fff' : '#000',
+    inputBg: isDark ? '#444' : '#dbd9d9',
+    modalBg: isDark ? '#222' : '#fff',
+    modalTexto: isDark ? '#fff' : '#000'
+  };
 
   const mostrarErro = (mensagem: string) => {
     setMensagemModal(mensagem);
@@ -44,23 +54,17 @@ export default function CadastroScreen() {
     try {
       const response = await fetch('http://127.0.0.1:8000/cadastro', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          usuario_aluno: email,
-          senha_aluno: senha,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario_aluno: email, senha_aluno: senha }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         mostrarConfirmacao(data.mensagem || 'Cadastro realizado com sucesso!');
       } else {
         mostrarErro(data.detail || 'Erro ao cadastrar');
       }
-    } catch (error) {
+    } catch {
       mostrarErro('Não foi possível conectar ao servidor');
     }
   };
@@ -71,53 +75,40 @@ export default function CadastroScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
       <View style={styles.content}>
-        <Image
-          source={require('../../assets/images/PoliedroLogo.jpg')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Image source={require('../../assets/images/PoliedroLogo.png')} style={styles.logo} resizeMode="contain" />
 
-        <Text style={styles.title}>Cadastro</Text>
+        <Text style={[styles.title, { color: tema.texto }]}>Cadastro</Text>
 
-        <View style={styles.inputContainerEmail}>
-          <Feather name="user" size={20} color="#555" style={styles.icon} />
+        <View style={[styles.inputContainerEmail, { backgroundColor: tema.inputBg }]}>
+          <Feather name="user" size={20} color="#888" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            style={[styles.input, { color: tema.texto }]} placeholder="Email" placeholderTextColor="#888"
+            value={email} onChangeText={setEmail} keyboardType="email-address"
           />
         </View>
 
-        <View style={styles.inputContainerSenha}>
-          <Feather name="lock" size={20} color="#555" style={styles.icon} />
+        <View style={[styles.inputContainerSenha, { backgroundColor: tema.inputBg }]}>
+          <Feather name="lock" size={20} color="#888" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="    Senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry={!mostrarSenha}
+            style={[styles.input, { color: tema.texto }]} placeholder="    Senha" placeholderTextColor="#888"
+            value={senha} onChangeText={setSenha} secureTextEntry={!mostrarSenha}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather name={mostrarSenha ? 'eye' : 'eye-off'} size={20} color="#555" />
+            <Feather name={mostrarSenha ? 'eye' : 'eye-off'} size={20} color="#888" />
           </TouchableOpacity>
         </View>
 
-        <View style={styles.inputContainerSenha}>
-          <Feather name="lock" size={20} color="#555" style={styles.icon} />
+        <View style={[styles.inputContainerSenha, { backgroundColor: tema.inputBg }]}>
+          <Feather name="lock" size={20} color="#888" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="    Confirme sua senha"
-            value={confirmarSenha}
-            onChangeText={setConfirmarSenha}
-            secureTextEntry={!mostrarConfirmar}
+            style={[styles.input, { color: tema.texto }]} placeholder="    Confirme sua senha" placeholderTextColor="#888"
+            value={confirmarSenha} onChangeText={setConfirmarSenha} secureTextEntry={!mostrarConfirmar}
           />
           <TouchableOpacity onPress={() => setMostrarConfirmar(!mostrarConfirmar)}>
-            <Feather name={mostrarConfirmar ? 'eye' : 'eye-off'} size={20} color="#555" />
+            <Feather name={mostrarConfirmar ? 'eye' : 'eye-off'} size={20} color="#888" />
           </TouchableOpacity>
         </View>
 
@@ -130,11 +121,10 @@ export default function CadastroScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Modal de Erro */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalText}>{mensagemModal}</Text>
+          <View style={[styles.modalBox, { backgroundColor: tema.modalBg }]}>
+            <Text style={[styles.modalText, { color: tema.modalTexto }]}>{mensagemModal}</Text>
             <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
@@ -142,11 +132,10 @@ export default function CadastroScreen() {
         </View>
       </Modal>
 
-      {/* Modal de Sucesso */}
       <Modal visible={modalSucesso} transparent animationType="fade">
         <View style={styles.modalContainer}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalText}>{mensagemModal}</Text>
+          <View style={[styles.modalBox, { backgroundColor: tema.modalBg }]}>
+            <Text style={[styles.modalText, { color: tema.modalTexto }]}>{mensagemModal}</Text>
             <TouchableOpacity onPress={fecharSucesso} style={styles.modalButton}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>

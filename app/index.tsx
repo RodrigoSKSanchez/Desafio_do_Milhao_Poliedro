@@ -1,12 +1,20 @@
 import React from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
-  SafeAreaView, StatusBar,Image 
+  SafeAreaView, StatusBar, Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../context/ThemeContext';
 
 export default function HomeScreen(): React.JSX.Element {
   const router = useRouter();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const tema = {
+    fundo: isDark ? '#000' : '#F7F7F7',
+    texto: isDark ? '#fff' : '#000',
+  };
 
   const handleLoginPress = () => {
     router.push('/login');
@@ -17,26 +25,24 @@ export default function HomeScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
       <View style={styles.content}>
+        <Image
+          source={require('../assets/images/PoliedroLogo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
-      <Image
-        source={require('../assets/images/PoliedroLogo.jpg')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-      
+        <Text style={[styles.title, { color: tema.texto }]}>Show do Milhão</Text>
 
-        <Text style={styles.title}>Show do Milhão</Text>
-        
         <TouchableOpacity 
           style={styles.button}
           onPress={handleLoginPress}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity 
           style={styles.button}
           onPress={handleCadastroPress}
@@ -51,7 +57,6 @@ export default function HomeScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
   },
   content: {
     flex: 1,
@@ -63,7 +68,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 60,
-    color: '#000',
   },
   button: {
     backgroundColor: '#2E2E54',
@@ -84,11 +88,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-
   logo: {
     width: 175,
     height: 175,
     marginBottom: 80,
   },
-
 });
