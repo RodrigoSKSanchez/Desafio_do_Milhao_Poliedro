@@ -91,7 +91,7 @@ export default function LoginScreen() {
           <Feather name="lock" size={20} color="#aaa" style={styles.icon} />
           <TextInput
             style={[styles.input, { color: tema.texto }]}
-            placeholder="    Senha"
+            placeholder="Senha"
             placeholderTextColor="#888"
             value={senha}
             onChangeText={setSenha}
@@ -131,7 +131,6 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

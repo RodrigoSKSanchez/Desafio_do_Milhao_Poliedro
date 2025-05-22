@@ -9,12 +9,11 @@ app = FastAPI()
 # Adiciona o middleware de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ou use ["http://localhost:8081"] se quiser restringir
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 class AlunoCadastro(BaseModel):
     usuario_aluno: str
@@ -23,6 +22,11 @@ class AlunoCadastro(BaseModel):
 class AlunoLogin(BaseModel):
     usuario_aluno: str
     senha_aluno: str
+
+class TrocarSenha(BaseModel):
+    usuario_aluno: str
+    senha_atual: str
+    nova_senha: str
 
 @Conexao.consultar
 def inserir_aluno(cursor, aluno: AlunoCadastro):
@@ -39,6 +43,21 @@ def verificar_login(cursor, aluno: AlunoLogin):
     )
     return cursor.fetchone()
 
+@Conexao.consultar
+def verificar_senha_atual(cursor, usuario: str, senha: str):
+    cursor.execute(
+        "SELECT * FROM Aluno WHERE usuario_aluno = %s AND senha_aluno = %s",
+        (usuario, senha)
+    )
+    return cursor.fetchone()
+
+@Conexao.consultar
+def atualizar_senha(cursor, usuario: str, nova_senha: str):
+    cursor.execute(
+        "UPDATE Aluno SET senha_aluno = %s WHERE usuario_aluno = %s",
+        (nova_senha, usuario)
+    )
+
 @app.post("/cadastro")
 def cadastrar_aluno(aluno: AlunoCadastro):
     try:
@@ -53,4 +72,19 @@ def login_aluno(aluno: AlunoLogin):
     if resultado:
         return {"mensagem": "Login realizado com sucesso!"}
     else:
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+        raise HTTPException(status_code=401, detail="Usuário ou senha incorretos.")
+
+@app.post("/trocar_senha")
+def trocar_senha(dados: TrocarSenha):
+    usuario = dados.usuario_aluno
+    senha_atual = dados.senha_atual
+    nova_senha = dados.nova_senha
+
+    if not verificar_senha_atual(usuario, senha_atual):
+        raise HTTPException(status_code=401, detail="Senha atual incorreta.")
+
+    try:
+        atualizar_senha(usuario, nova_senha)
+        return {"mensagem": "Senha alterada com sucesso!"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Erro ao atualizar senha: " + str(e))
