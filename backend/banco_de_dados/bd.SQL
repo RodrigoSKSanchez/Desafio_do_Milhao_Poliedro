@@ -6,6 +6,7 @@ CREATE TABLE Aluno (
   idAluno INT NOT NULL AUTO_INCREMENT,
   usuario_aluno VARCHAR(45) NOT NULL UNIQUE,
   senha_aluno VARCHAR(45) NOT NULL,
+  dinhero INT,
   PRIMARY KEY (idAluno))
 ENGINE = InnoDB;
 
