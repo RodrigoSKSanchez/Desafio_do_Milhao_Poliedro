@@ -96,7 +96,7 @@ export default function ConfiguracoesScreen() {
         <Text style={[styles.titulo, { color: tema.texto }]}>Configurações</Text>
       </View>
 
-      <View style={styles.sliderContainer}>
+      {/* <View style={styles.sliderContainer}>
         <Ionicons name="headset-outline" size={24} color={tema.texto} />
         {Platform.OS === 'web' ? (
           <input
@@ -120,7 +120,7 @@ export default function ConfiguracoesScreen() {
           />
         )}
         <Text style={[styles.sliderText, { color: tema.texto }]}>{volume} %</Text>
-      </View>
+      </View> */}
 
       <TouchableOpacity onPress={toggleTheme} style={styles.temaContainer}>
         <Ionicons

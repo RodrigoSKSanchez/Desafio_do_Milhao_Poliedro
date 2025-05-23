@@ -46,7 +46,9 @@ export default function JogoScreen() {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.jogarButton}>
+        <TouchableOpacity style={styles.jogarButton}
+        onPress={() => router.push('/jogo')}
+        >
           <Text style={styles.buttonText}>Jogar</Text>
           <Ionicons name="play" size={24} color="#fff" />
         </TouchableOpacity>
