@@ -104,8 +104,8 @@ export default function JogoScreen() {
 
         <View style={styles.ajudaContainer}>
           <TouchableOpacity style={styles.ajudaBotao}><Ionicons name="arrow-forward" size={20} color="#fff" /></TouchableOpacity>
-          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>1</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>2</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>Dica</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>1/2</Text></TouchableOpacity>
         </View>
 
         <View style={styles.premiosContainer}>
@@ -152,7 +152,7 @@ export default function JogoScreen() {
             <TouchableOpacity style={styles.fecharModal} onPress={() => setModalPararVisible(false)}>
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTexto}>VOCÊ TEM CERTEZA QUE QUER PARAR?{"\n"}Recompensa: X R$</Text>
+            <Text style={styles.modalTexto}>VOCÊ TEM CERTEZA QUE QUER PARAR?{"\n"}Recompensa: R$ X</Text>
             <TouchableOpacity style={styles.botaoParar} onPress={() => console.log("Confirmar Parar")}> 
               <Text style={styles.botaoPararTexto}>PARAR</Text>
             </TouchableOpacity>
