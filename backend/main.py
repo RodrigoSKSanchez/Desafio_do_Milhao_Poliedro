@@ -88,3 +88,13 @@ def trocar_senha(dados: TrocarSenha):
         return {"mensagem": "Senha alterada com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=400, detail="Erro ao atualizar senha: " + str(e))
+
+
+from banco_de_dados.perguntas import Perguntas
+
+@app.get("/pergunta")
+def obter_pergunta(ano: int):
+    pergunta = Perguntas.buscar_pergunta_por_ano(ano)
+    if not pergunta:
+        raise HTTPException(status_code=404, detail="Nenhuma pergunta encontrada para o ano especificado.")
+    return pergunta

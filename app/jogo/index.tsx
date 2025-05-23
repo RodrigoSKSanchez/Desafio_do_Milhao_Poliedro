@@ -43,8 +43,8 @@ export default function JogoScreen() {
 
         <View style={styles.ajudaContainer}>
           <TouchableOpacity style={styles.ajudaBotao}><Ionicons name="arrow-forward" size={20} color="#fff" /></TouchableOpacity>
-          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>1</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>2</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>1/2</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.ajudaBotao}><Text style={styles.ajudaTexto}>Dica</Text></TouchableOpacity>
         </View>
 
         <View style={styles.premiosContainer}>

@@ -17,7 +17,7 @@ class Conexao:
         @wraps(func)
         def criar_consulta(*args, **kwargs):
             with mysql.connector.connect(**Conexao.banco_de_dados) as acessar_banco:
-                consulta = acessar_banco.cursor()
+                consulta = acessar_banco.cursor(dictionary=True)
                 resultado = func(consulta, *args, **kwargs)
                 consulta.close()
                 acessar_banco.commit()
