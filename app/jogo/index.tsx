@@ -11,10 +11,6 @@ import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useRouter } from 'expo-router';
-
-
-  const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
-
   const finalizarJogo = async () => {
     const idAluno = await AsyncStorage.getItem('idAluno'); // substitua com o ID real
     try {
@@ -51,6 +47,7 @@ export default function JogoScreen() {
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
   const [dinheiro, setDinheiro] = useState(0);
+  const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
   const [perguntasUsadas, setPerguntasUsadas] = useState(new Set());
   const isDesktop = width > 768;
   const MAX_DINHEIRO = 1000000;
@@ -138,10 +135,10 @@ const verificarResposta = (alternativa) => {
     setContadorQuestoes(novaContagem);
     setDinheiro(novoDinheiro);
 
-    if (novoDinheiro >= MAX_DINHEIRO) {
-      setModalVitoriaVisible(true);
-      return;
-    }
+    if (novoDinheiro >= MAX_DINHEIRO && !modalVitoriaVisible) {
+    setModalVitoriaVisible(true);
+    // Não interrompe o fluxo com return
+  }
 
     if (novaContagem % 10 === 0 && anoAtual < 13) {
       setAnoAtual((prev) => prev + 1);
@@ -176,8 +173,52 @@ const verificarResposta = (alternativa) => {
     });
   };
 
+  if (!pergunta) {
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: cores.fundo }]}>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+      <Text style={{ color: '#fff', fontSize: 18 }}>Carregando pergunta...</Text>
+    <Modal
+        visible={modalVitoriaVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={{
+          flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+          justifyContent: 'center', alignItems: 'center'
+        }}>
+          <View style={{
+            backgroundColor: 'white', padding: 20, borderRadius: 20,
+            alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>
+              PARABÉNS POR GANHAR O JOGO!!
+            </Text>
+            <TouchableOpacity
+              style={{ backgroundColor: '#444', padding: 10, borderRadius: 10 }}
+              onPress={() => {
+                setModalVitoriaVisible(false);
+                router.replace({
+      pathname: '/fim_de_jogo',
+      params: {
+        total: totalPerguntas.toString(),
+        dinheiro: dinheiro.toString(),
+        respondidas: contadorQuestoes.toString(),
+        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
+      }
+    });
+              }}
+            >
+              <Text style={{ color: 'white' }}>Ir para tela final</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+}
+
+return (
+  <SafeAreaView style={[styles.container, { backgroundColor: cores.fundo }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={cores.fundo} />
       <View style={[styles.content, isDesktop && styles.contentDesktop]}>
         <TouchableOpacity
@@ -283,6 +324,42 @@ const verificarResposta = (alternativa) => {
     
       
 
+    <Modal
+        visible={modalVitoriaVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={{
+          flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+          justifyContent: 'center', alignItems: 'center'
+        }}>
+          <View style={{
+            backgroundColor: 'white', padding: 20, borderRadius: 20,
+            alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>
+              PARABÉNS POR GANHAR O JOGO!!
+            </Text>
+            <TouchableOpacity
+              style={{ backgroundColor: '#444', padding: 10, borderRadius: 10 }}
+              onPress={() => {
+                setModalVitoriaVisible(false);
+                router.replace({
+      pathname: '/fim_de_jogo',
+      params: {
+        total: totalPerguntas.toString(),
+        dinheiro: dinheiro.toString(),
+        respondidas: contadorQuestoes.toString(),
+        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
+      }
+    });
+              }}
+            >
+              <Text style={{ color: 'white' }}>Ir para tela final</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -323,39 +400,4 @@ const styles = StyleSheet.create({
 });
 
 
-      <Modal
-        visible={modalVitoriaVisible}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={{
-          flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
-          justifyContent: 'center', alignItems: 'center'
-        }}>
-          <View style={{
-            backgroundColor: 'white', padding: 20, borderRadius: 20,
-            alignItems: 'center'
-          }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>
-              PARABÉNS POR GANHAR O JOGO!!
-            </Text>
-            <TouchableOpacity
-              style={{ backgroundColor: '#444', padding: 10, borderRadius: 10 }}
-              onPress={() => {
-                setModalVitoriaVisible(false);
-                router.replace({
-      pathname: '/fim_de_jogo',
-      params: {
-        total: totalPerguntas.toString(),
-        dinheiro: dinheiro.toString(),
-        respondidas: contadorQuestoes.toString(),
-        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
-      }
-    });
-              }}
-            >
-              <Text style={{ color: 'white' }}>Ir para tela final</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      
