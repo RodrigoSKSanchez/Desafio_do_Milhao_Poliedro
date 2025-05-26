@@ -1,4 +1,5 @@
-import React from 'react';
+import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar
 } from 'react-native';
@@ -6,6 +7,60 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function FimDeJogoScreen() {
+  useEffect(() => {
+    const salvarHistorico = async () => {
+      const idAluno = await AsyncStorage.getItem('idAluno');
+      console.log('ID do aluno:', idAluno);
+      if (!idAluno) return;
+      try {
+        console.log("Dados enviados:", { dinheiro, respondidas, total });
+      await fetch("http://localhost:8000/registrar_historico", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idAluno: Number(idAluno),
+            numero_acertos: Number(respondidas),
+            total_perguntas: Number(total),
+            saldo_final: Number(dinheiro)
+          })
+        });
+      } catch (err) {
+        console.error("Erro ao salvar histórico:", err);
+      }
+    };
+    salvarHistorico();
+  }, []);
+
+
+
+useEffect(() => {
+  const salvarHistorico = async () => {
+    const idAluno = await AsyncStorage.getItem('idAluno');
+      console.log('ID do aluno:', idAluno);
+    if (!idAluno) return;
+    try {
+      console.log("Dados enviados:", { dinheiro, respondidas, total });
+      await fetch("http://localhost:8000/registrar_historico", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idAluno: Number(idAluno),
+          numero_acertos: Number(respondidas),
+          total_perguntas: Number(total),
+          saldo_final: Number(dinheiro)
+        })
+      });
+    } catch (err) {
+      console.error("Erro ao salvar histórico:", err);
+    }
+  };
+  salvarHistorico();
+}, []);
+
   const router = useRouter();
   const { dinheiro, respondidas, total } = useLocalSearchParams();
   const { theme } = useTheme();

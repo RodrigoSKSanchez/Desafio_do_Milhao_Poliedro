@@ -39,6 +39,7 @@ CREATE TABLE Historico (
   numero_acertos INT NOT NULL DEFAULT 0,
   total_perguntas INT NOT NULL DEFAULT 0,
   dinheiro_ganho INT NOT NULL DEFAULT 0,
+  saldo_final INT NOT NULL DEFAULT 0,
   PRIMARY KEY (idHistorico, idAluno),
   FOREIGN KEY (idAluno) REFERENCES Aluno (idAluno) ON DELETE NO ACTION ON UPDATE NO ACTION
   )

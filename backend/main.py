@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from banco_de_dados.bd import Conexao
@@ -70,9 +69,14 @@ def cadastrar_aluno(aluno: AlunoCadastro):
 def login_aluno(aluno: AlunoLogin):
     resultado = verificar_login(aluno)
     if resultado:
-        return {"mensagem": "Login realizado com sucesso!"}
+        idAluno = resultado["idAluno"] if isinstance(resultado, dict) else resultado[0]
+        return {
+            "mensagem": "Login realizado com sucesso!",
+            "idAluno": idAluno
+        }
     else:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos.")
+
 
 @app.post("/trocar_senha")
 def trocar_senha(dados: TrocarSenha):
@@ -101,31 +105,22 @@ def obter_pergunta(ano: int, excluidos: str = Query("", alias="excluidos")):
     return pergunta
 
 
-
-class HistoricoRequest(BaseModel):
+# FINAL - Histórico de jogo
+class HistoricoEntrada(BaseModel):
     idAluno: int
     numero_acertos: int
     total_perguntas: int
-    dinheiro_ganho: int
+    saldo_final: int
 
 @app.post("/registrar_historico")
-def registrar_historico(h: HistoricoRequest):
+def registrar_historico(dados: HistoricoEntrada):
     try:
-        conexao = Conexao()
-        conexao.conectar()
-        cursor = conexao.cursor
-
-        cursor.execute("""
-            INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, dinheiro_ganho)
-            VALUES (%s, %s, %s, %s)
-        """, (h.idAluno, h.numero_acertos, h.total_perguntas, h.dinheiro_ganho))
-
-        cursor.execute("""
-            UPDATE Aluno SET dinheiro = dinheiro + %s WHERE idAluno = %s
-        """, (h.dinheiro_ganho, h.idAluno))
-
-        conexao.conexao.commit()
-        conexao.desconectar()
-        return {"mensagem": "Histórico registrado com sucesso."}
+        Conexao.inserir_historico(
+            dados.idAluno,
+            dados.numero_acertos,
+            dados.total_perguntas,
+            dados.saldo_final
+        )
+        return {"mensagem": "Histórico registrado com sucesso"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

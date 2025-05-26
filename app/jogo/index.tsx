@@ -8,7 +8,6 @@ import {
 
 import { useTheme } from '../../context/ThemeContext';
 
-import { Ionicons } from '@expo/vector-icons';
 
 import { useRouter } from 'expo-router';
   const finalizarJogo = async () => {
@@ -67,7 +66,7 @@ if (!response.ok) {
     const proximoAno = anoAtual + 1;
     console.warn("Acabaram as perguntas deste ano. Subindo para o próximo ano.");
     setAnoAtual(proximoAno);
-    // buscarPergunta será chamado pelo useEffect de anoAtual
+    
 } else {
     console.warn("Acabaram as perguntas do último ano. Encerrando.");
     

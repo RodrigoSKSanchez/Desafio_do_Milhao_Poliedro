@@ -23,3 +23,15 @@ class Conexao:
                 acessar_banco.commit()
                 return resultado
         return criar_consulta
+
+    @staticmethod
+    def inserir_historico(id_aluno, numero_acertos, total_perguntas, saldo_final):
+        with mysql.connector.connect(**Conexao.banco_de_dados) as conexao:
+            with conexao.cursor() as cursor:
+                query = """
+                    INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, saldo_final)
+                    VALUES (%s, %s, %s, %s)
+                """
+                valores = (id_aluno, numero_acertos, total_perguntas, saldo_final)
+                cursor.execute(query, valores)
+                conexao.commit()
