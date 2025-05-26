@@ -78,3 +78,43 @@ VALUES
   ('(8) Pergunta 3 ano medio', 12, 'dica (8)', '(8) Alternativa A', '(8) Alternativa B', '(8) Alternativa C', '(8) Alternativa CORRETA'),
   ('(9) Pergunta 3 ano medio', 12, 'dica (9)', '(9) Alternativa A', '(9) Alternativa B', '(9) Alternativa C', '(9) Alternativa CORRETA'),
   ('(10) Pergunta 3 ano medio', 12, 'dica (10)', '(10) Alternativa A', '(10) Alternativa B', '(10) Alternativa C', '(10) Alternativa CORRETA');
+
+INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+VALUES
+  ('(11) Pergunta 8 ano', 8, 'dica (11)', '(11) Alternativa A', '(11) Alternativa B', '(11) Alternativa C', '(11) Alternativa CORRETA'),
+  ('(12) Pergunta 8 ano', 8, 'dica (12)', '(12) Alternativa A', '(12) Alternativa B', '(12) Alternativa C', '(12) Alternativa CORRETA'),
+  ('(13) Pergunta 8 ano', 8, 'dica (13)', '(13) Alternativa A', '(13) Alternativa B', '(13) Alternativa C', '(13) Alternativa CORRETA'),
+  ('(14) Pergunta 8 ano', 8, 'dica (14)', '(14) Alternativa A', '(14) Alternativa B', '(14) Alternativa C', '(14) Alternativa CORRETA'),
+  ('(15) Pergunta 8 ano', 8, 'dica (15)', '(15) Alternativa A', '(15) Alternativa B', '(15) Alternativa C', '(15) Alternativa CORRETA');
+
+INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+VALUES
+  ('(11) Pergunta 9 ano', 9, 'dica (11)', '(11) Alternativa A', '(11) Alternativa B', '(11) Alternativa C', '(11) Alternativa CORRETA'),
+  ('(12) Pergunta 9 ano', 9, 'dica (12)', '(12) Alternativa A', '(12) Alternativa B', '(12) Alternativa C', '(12) Alternativa CORRETA'),
+  ('(13) Pergunta 9 ano', 9, 'dica (13)', '(13) Alternativa A', '(13) Alternativa B', '(13) Alternativa C', '(13) Alternativa CORRETA'),
+  ('(14) Pergunta 9 ano', 9, 'dica (14)', '(14) Alternativa A', '(14) Alternativa B', '(14) Alternativa C', '(14) Alternativa CORRETA'),
+  ('(15) Pergunta 9 ano', 9, 'dica (15)', '(15) Alternativa A', '(15) Alternativa B', '(15) Alternativa C', '(15) Alternativa CORRETA');
+
+INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+VALUES
+  ('(11) Pergunta 1 ano medio', 10, 'dica (11)', '(11) Alternativa A', '(11) Alternativa B', '(11) Alternativa C', '(11) Alternativa CORRETA'),
+  ('(12) Pergunta 1 ano medio', 10, 'dica (12)', '(12) Alternativa A', '(12) Alternativa B', '(12) Alternativa C', '(12) Alternativa CORRETA'),
+  ('(13) Pergunta 1 ano medio', 10, 'dica (13)', '(13) Alternativa A', '(13) Alternativa B', '(13) Alternativa C', '(13) Alternativa CORRETA'),
+  ('(14) Pergunta 1 ano medio', 10, 'dica (14)', '(14) Alternativa A', '(14) Alternativa B', '(14) Alternativa C', '(14) Alternativa CORRETA'),
+  ('(15) Pergunta 1 ano medio', 10, 'dica (15)', '(15) Alternativa A', '(15) Alternativa B', '(15) Alternativa C', '(15) Alternativa CORRETA');
+
+INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+VALUES
+  ('(11) Pergunta 2 ano medio', 11, 'dica (11)', '(11) Alternativa A', '(11) Alternativa B', '(11) Alternativa C', '(11) Alternativa CORRETA'),
+  ('(12) Pergunta 2 ano medio', 11, 'dica (12)', '(12) Alternativa A', '(12) Alternativa B', '(12) Alternativa C', '(12) Alternativa CORRETA'),
+  ('(13) Pergunta 2 ano medio', 11, 'dica (13)', '(13) Alternativa A', '(13) Alternativa B', '(13) Alternativa C', '(13) Alternativa CORRETA'),
+  ('(14) Pergunta 2 ano medio', 11, 'dica (14)', '(14) Alternativa A', '(14) Alternativa B', '(14) Alternativa C', '(14) Alternativa CORRETA'),
+  ('(15) Pergunta 2 ano medio', 11, 'dica (15)', '(15) Alternativa A', '(15) Alternativa B', '(15) Alternativa C', '(15) Alternativa CORRETA');
+
+INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+VALUES
+  ('(11) Pergunta 3 ano medio', 12, 'dica (11)', '(11) Alternativa A', '(11) Alternativa B', '(11) Alternativa C', '(11) Alternativa CORRETA'),
+  ('(12) Pergunta 3 ano medio', 12, 'dica (12)', '(12) Alternativa A', '(12) Alternativa B', '(12) Alternativa C', '(12) Alternativa CORRETA'),
+  ('(13) Pergunta 3 ano medio', 12, 'dica (13)', '(13) Alternativa A', '(13) Alternativa B', '(13) Alternativa C', '(13) Alternativa CORRETA'),
+  ('(14) Pergunta 3 ano medio', 12, 'dica (14)', '(14) Alternativa A', '(14) Alternativa B', '(14) Alternativa C', '(14) Alternativa CORRETA'),
+  ('(15) Pergunta 3 ano medio', 12, 'dica (15)', '(15) Alternativa A', '(15) Alternativa B', '(15) Alternativa C', '(15) Alternativa CORRETA');
