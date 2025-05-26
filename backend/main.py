@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from banco_de_dados.bd import Conexao
 from fastapi.middleware.cors import CORSMiddleware
@@ -93,8 +93,39 @@ def trocar_senha(dados: TrocarSenha):
 from banco_de_dados.perguntas import Perguntas
 
 @app.get("/pergunta")
-def obter_pergunta(ano: int):
-    pergunta = Perguntas.buscar_pergunta_por_ano(ano)
+def obter_pergunta(ano: int, excluidos: str = Query("", alias="excluidos")):
+    ids_excluidos = [int(i) for i in excluidos.split(",") if i.strip().isdigit()] if excluidos else []
+    pergunta = Perguntas.buscar_pergunta_por_ano(ano, ids_excluidos if ids_excluidos else None)
     if not pergunta:
         raise HTTPException(status_code=404, detail="Nenhuma pergunta encontrada para o ano especificado.")
     return pergunta
+
+
+
+class HistoricoRequest(BaseModel):
+    idAluno: int
+    numero_acertos: int
+    total_perguntas: int
+    dinheiro_ganho: int
+
+@app.post("/registrar_historico")
+def registrar_historico(h: HistoricoRequest):
+    try:
+        conexao = Conexao()
+        conexao.conectar()
+        cursor = conexao.cursor
+
+        cursor.execute("""
+            INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, dinheiro_ganho)
+            VALUES (%s, %s, %s, %s)
+        """, (h.idAluno, h.numero_acertos, h.total_perguntas, h.dinheiro_ganho))
+
+        cursor.execute("""
+            UPDATE Aluno SET dinheiro = dinheiro + %s WHERE idAluno = %s
+        """, (h.dinheiro_ganho, h.idAluno))
+
+        conexao.conexao.commit()
+        conexao.desconectar()
+        return {"mensagem": "Histórico registrado com sucesso."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

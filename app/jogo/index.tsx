@@ -1,11 +1,40 @@
 import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar,
   useWindowDimensions, Modal
 } from 'react-native';
+
 import { useTheme } from '../../context/ThemeContext';
+
 import { Ionicons } from '@expo/vector-icons';
+
 import { useRouter } from 'expo-router';
+
+
+  const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
+
+  const finalizarJogo = async () => {
+    const idAluno = await AsyncStorage.getItem('idAluno'); // substitua com o ID real
+    try {
+      await fetch('http://localhost:8000/registrar_historico', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idAluno,
+          numero_acertos: contadorQuestoes,
+          total_perguntas: 15,
+          dinheiro_ganho: dinheiro
+        })
+      });
+    } catch (error) {
+      console.error("Erro ao registrar histórico:", error);
+    }
+    setModalVitoriaVisible(true);
+  };
 
 export default function JogoScreen() {
   const { theme } = useTheme();
@@ -16,12 +45,13 @@ export default function JogoScreen() {
   const [pergunta, setPergunta] = useState(null);
   const [anoAtual, setAnoAtual] = useState(8);
   const [contadorQuestoes, setContadorQuestoes] = useState(0);
+  const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [modalErro, setModalErro] = useState(false);
   const [respostaCorreta, setRespostaCorreta] = useState(null);
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
   const [dinheiro, setDinheiro] = useState(0);
-
+  const [perguntasUsadas, setPerguntasUsadas] = useState(new Set());
   const isDesktop = width > 768;
   const MAX_DINHEIRO = 1000000;
 
@@ -31,35 +61,64 @@ export default function JogoScreen() {
     box: '#2E2E54',
   };
 
-  const buscarPergunta = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/pergunta?ano=${anoAtual}`);
-      if (!response.ok) {
-        encerrarJogo();
+  const buscarPergunta = async (tentativas = 0) => {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/pergunta?ano=${anoAtual}`);
+    
+if (!response.ok) {
+  if (anoAtual < 13) {
+    const proximoAno = anoAtual + 1;
+    console.warn("Acabaram as perguntas deste ano. Subindo para o próximo ano.");
+    setAnoAtual(proximoAno);
+    // buscarPergunta será chamado pelo useEffect de anoAtual
+} else {
+    console.warn("Acabaram as perguntas do último ano. Encerrando.");
+    
+  }
+  return;
+}
+
+
+    const data = await response.json();
+
+    if (perguntasUsadas.has(data.id)) {
+      if (tentativas > 10) {
+        console.warn("Muitas tentativas com perguntas repetidas. Encerrando.");
+        
         return;
       }
-      const data = await response.json();
-      const letras = ['A', 'B', 'C', 'D'];
-      const alternativasEmbaralhadas = [...data.alternativas].sort(() => Math.random() - 0.5);
-      const alternativasComLetra = letras.map((letra, i) => ({ ...alternativasEmbaralhadas[i], letra }));
-      setPergunta({
-        id: data.id,
-        enunciado: data.enunciado,
-        ano: data.ano,
-        dica: data.dica,
-        alternativas: alternativasComLetra,
-      });
-    } catch (error) {
-      encerrarJogo();
+      console.warn("Pergunta já usada. Tentando novamente...");
+      buscarPergunta(tentativas + 1);
+      return;
     }
-  };
+
+    const letras = ['A', 'B', 'C', 'D'];
+    const alternativasEmbaralhadas = [...data.alternativas].sort(() => Math.random() - 0.5);
+    const alternativasComLetra = letras.map((letra, i) => ({ ...alternativasEmbaralhadas[i], letra }));
+
+    setPergunta({
+      id: data.id,
+      enunciado: data.enunciado,
+      ano: data.ano,
+      dica: data.dica,
+      alternativas: alternativasComLetra,
+    });
+
+    setPerguntasUsadas(prev => new Set(prev).add(data.id));
+  } catch (error) {
+    console.warn("Erro ao buscar pergunta. Exibindo modal.");
+    
+  }
+};
 
   const encerrarJogo = () => {
     router.replace({
-      pathname: '/fim_de_jogo/index',
+      pathname: '/fim_de_jogo',
       params: {
+        total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
         respondidas: contadorQuestoes.toString(),
+        total: totalPerguntas.toString(),
       },
     });
   };
@@ -68,28 +127,36 @@ export default function JogoScreen() {
     buscarPergunta();
   }, [anoAtual]);
 
-  const verificarResposta = (alternativa) => {
-    if (alternativa.correta) {
-      const novaContagem = contadorQuestoes + 1;
-      const novoDinheiro = dinheiro + 20000;
-      setContadorQuestoes(novaContagem);
-      setDinheiro(novoDinheiro);
-      if (novoDinheiro >= MAX_DINHEIRO) {
-        encerrarJogo();
-        return;
-      }
-      if (novaContagem % 10 === 0 && anoAtual < 13) {
-        setAnoAtual((prev) => prev + 1);
-      }
-      buscarPergunta();
-    } else {
-      const novaQuantia = Math.max(dinheiro - 100000, 0);
-      setDinheiro(novaQuantia);
-      const correta = pergunta.alternativas.find((a) => a.correta);
-      setRespostaCorreta(correta);
-      setModalErro(true);
+  
+const verificarResposta = (alternativa) => {
+  setTotalPerguntas(prev => prev + 1);
+
+  if (alternativa.correta) {
+    const novaContagem = contadorQuestoes + 1;
+    const novoDinheiro = dinheiro + 20000;
+
+    setContadorQuestoes(novaContagem);
+    setDinheiro(novoDinheiro);
+
+    if (novoDinheiro >= MAX_DINHEIRO) {
+      setModalVitoriaVisible(true);
+      return;
     }
-  };
+
+    if (novaContagem % 10 === 0 && anoAtual < 13) {
+      setAnoAtual((prev) => prev + 1);
+    } else {
+      buscarPergunta();
+    }
+  } else {
+    const novaQuantia = Math.max(dinheiro - 100000, 0);
+    setDinheiro(novaQuantia);
+    const correta = pergunta.alternativas.find((a) => a.correta);
+    setRespostaCorreta(correta);
+    setModalErro(true);
+  }
+};
+
 
   const fecharModalErro = () => {
     setModalErro(false);
@@ -99,10 +166,12 @@ export default function JogoScreen() {
   const confirmarParar = () => {
     const valorFinal = Math.floor(dinheiro * 0.5);
     router.replace({
-      pathname: '/fim_de_jogo/index',
+      pathname: '/fim_de_jogo',
       params: {
+        total: totalPerguntas.toString(),
         dinheiro: valorFinal.toString(),
         respondidas: contadorQuestoes.toString(),
+        total: totalPerguntas.toString(),
       },
     });
   };
@@ -115,8 +184,8 @@ export default function JogoScreen() {
           style={[styles.perguntaBox, { backgroundColor: cores.box }]}
           onPress={() => setModalPerguntaVisible(true)}
         >
-          <Text style={styles.perguntaTexto}>{pergunta?.enunciado || "(Carregando...)"}</Text>
-          {pergunta?.alternativas.map((alt, index) => (
+          <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
+          {(pergunta?.alternativas || []).map((alt, index) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -125,15 +194,23 @@ export default function JogoScreen() {
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {pergunta?.alternativas.slice(0, 2).map((alt, index) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor: '#888' }]} onPress={() => verificarResposta(alt)}>
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt, index) => (
+              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
+            alt.letra === 'A' ? 'red' :
+            alt.letra === 'B' ? 'green' :
+            alt.letra === 'C' ? 'magenta' :
+            alt.letra === 'D' ? 'blue' : '#888' }]} onPress={() => verificarResposta(alt)}>
                 <Text style={styles.respostaTexto}>{alt.letra}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {pergunta?.alternativas.slice(2).map((alt, index) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor: '#888' }]} onPress={() => verificarResposta(alt)}>
+            {(pergunta?.alternativas || []).slice(2).map((alt, index) => (
+              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
+            alt.letra === 'A' ? 'red' :
+            alt.letra === 'B' ? 'green' :
+            alt.letra === 'C' ? 'magenta' :
+            alt.letra === 'D' ? 'blue' : '#888' }]} onPress={() => verificarResposta(alt)}>
                 <Text style={styles.respostaTexto}>{alt.letra}</Text>
               </TouchableOpacity>
             ))}
@@ -169,8 +246,8 @@ export default function JogoScreen() {
             <TouchableOpacity style={styles.fecharModal} onPress={() => setModalPerguntaVisible(false)}>
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTexto}>{pergunta?.enunciado}</Text>
-            {pergunta?.alternativas.map((alt, index) => (
+            <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
+            {(pergunta?.alternativas || []).map((alt, index) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
@@ -203,6 +280,9 @@ export default function JogoScreen() {
           </View>
         </View>
       </Modal>
+    
+      
+
     </SafeAreaView>
   );
 }
@@ -241,3 +321,41 @@ const styles = StyleSheet.create({
   fecharModal: { position: 'absolute', top: 10, right: 10 },
   fecharModalTexto: { color: 'red', fontSize: 22, fontWeight: 'bold' },
 });
+
+
+      <Modal
+        visible={modalVitoriaVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={{
+          flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+          justifyContent: 'center', alignItems: 'center'
+        }}>
+          <View style={{
+            backgroundColor: 'white', padding: 20, borderRadius: 20,
+            alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>
+              PARABÉNS POR GANHAR O JOGO!!
+            </Text>
+            <TouchableOpacity
+              style={{ backgroundColor: '#444', padding: 10, borderRadius: 10 }}
+              onPress={() => {
+                setModalVitoriaVisible(false);
+                router.replace({
+      pathname: '/fim_de_jogo',
+      params: {
+        total: totalPerguntas.toString(),
+        dinheiro: dinheiro.toString(),
+        respondidas: contadorQuestoes.toString(),
+        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
+      }
+    });
+              }}
+            >
+              <Text style={{ color: 'white' }}>Ir para tela final</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>

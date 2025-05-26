@@ -1,3 +1,4 @@
+
 from banco_de_dados.bd import Conexao
 import random
 
@@ -7,11 +8,24 @@ class Perguntas:
 
     @staticmethod
     @Conexao.consultar
-    def buscar_pergunta_por_ano(cursor, ano):
-        cursor.execute(
-            "SELECT idPergunta, texto_enunciado, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA FROM Pergunta WHERE ano = %s ORDER BY RAND() LIMIT 1",
-            (ano,)
-        )
+    def buscar_pergunta_por_ano(cursor, ano, excluidos=None):
+        if excluidos:
+            placeholders = ",".join(["%s"] * len(excluidos))
+            query = f"""
+                SELECT idPergunta, texto_enunciado, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA
+                FROM Pergunta
+                WHERE ano = %s AND idPergunta NOT IN ({placeholders})
+                ORDER BY RAND()
+                LIMIT 1
+            """
+            params = [ano] + excluidos
+            cursor.execute(query, tuple(params))
+        else:
+            cursor.execute(
+                "SELECT idPergunta, texto_enunciado, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA FROM Pergunta WHERE ano = %s ORDER BY RAND() LIMIT 1",
+                (ano,)
+            )
+
         pergunta = cursor.fetchone()
         if not pergunta:
             return None
