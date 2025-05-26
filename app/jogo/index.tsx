@@ -125,7 +125,7 @@ if (!response.ok) {
   }, [anoAtual]);
 
   
-const verificarResposta = (alternativa) => {
+const verificarResposta = (alternativa: { correta: any; }) => {
   setTotalPerguntas(prev => prev + 1);
 
   if (alternativa.correta) {
@@ -148,7 +148,7 @@ const verificarResposta = (alternativa) => {
   } else {
     const novaQuantia = Math.max(dinheiro - 100000, 0);
     setDinheiro(novaQuantia);
-    const correta = pergunta.alternativas.find((a) => a.correta);
+    const correta = pergunta.alternativas.find((a: { correta: any; }) => a.correta);
     setRespostaCorreta(correta);
     setModalErro(true);
   }
@@ -226,7 +226,7 @@ return (
           onPress={() => setModalPerguntaVisible(true)}
         >
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
-          {(pergunta?.alternativas || []).map((alt, index) => (
+          {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -235,7 +235,7 @@ return (
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(0, 2).map((alt, index) => (
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -246,7 +246,7 @@ return (
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(2).map((alt, index) => (
+            {(pergunta?.alternativas || []).slice(2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -288,7 +288,7 @@ return (
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
-            {(pergunta?.alternativas || []).map((alt, index) => (
+            {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
@@ -400,4 +400,8 @@ const styles = StyleSheet.create({
 });
 
 
+
+function setModalVitoriaVisible(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
       
