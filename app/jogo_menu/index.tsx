@@ -54,7 +54,9 @@ export default function JogoScreen() {
           <Ionicons name="play" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.lojaButton}>
+        <TouchableOpacity style={styles.lojaButton}
+        onPress={() => router.push('/loja')}
+        >
           <Text style={styles.buttonText}>Loja</Text>
           <FontAwesome name="shopping-bag" size={24} color="#000" />
         </TouchableOpacity>
