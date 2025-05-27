@@ -171,3 +171,43 @@ def obter_historico(cursor, idAluno: int):
 @app.get("/historico_aluno")
 def rota_historico_aluno(idAluno: int):
     return obter_historico(idAluno)
+
+
+class Compra(BaseModel):
+    idAluno: int
+    tipo: str  # 'dica', 'pula' ou 'elimina'
+
+@Conexao.consultar
+def processar_compra(cursor, idAluno: int, tipo: str):
+    precos = {
+        "dica": 20000,
+        "elimina": 50000,
+        "pula": 80000
+    }
+
+    if tipo not in precos:
+        raise HTTPException(status_code=400, detail="Tipo de power-up inválido")
+
+    preco = precos[tipo]
+
+    cursor.execute("SELECT dinhero FROM Aluno WHERE idAluno = %s", (idAluno,))
+    resultado = cursor.fetchone()
+
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Aluno não encontrado")
+
+    dinhero_atual = resultado["dinhero"]
+
+    if dinhero_atual < preco:
+        raise HTTPException(status_code=400, detail="Saldo insuficiente")
+
+    cursor.execute(f"""
+        UPDATE Aluno
+        SET dinhero = dinhero - %s, {tipo} = {tipo} + 1
+        WHERE idAluno = %s
+    """, (preco, idAluno))
+
+@app.post("/comprar_powerup")
+def comprar_powerup(compra: Compra):
+    processar_compra(compra.idAluno, compra.tipo)
+    return {"mensagem": f"{compra.tipo} comprado com sucesso"}
