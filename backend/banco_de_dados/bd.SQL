@@ -7,8 +7,12 @@ CREATE TABLE Aluno (
   usuario_aluno VARCHAR(45) NOT NULL UNIQUE,
   senha_aluno VARCHAR(45) NOT NULL,
   dinhero INT NOT NULL DEFAULT 0,
+  dica INT NOT NULL DEFAULT 0,
+  pula INT NOT NULL DEFAULT 0,
+  elimina INT NOT NULL DEFAULT 0,
   PRIMARY KEY (idAluno))
 ENGINE = InnoDB;
+
 
 DROP TABLE IF EXISTS Professor CASCADE ;
 CREATE TABLE Professor (
