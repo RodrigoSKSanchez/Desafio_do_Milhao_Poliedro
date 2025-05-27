@@ -46,6 +46,9 @@ export default function JogoScreen() {
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
 const [modalDicaVisible, setModalDicaVisible] = useState(false);
+const [dica, setDica] = useState(0);
+const [pula, setPula] = useState(0);
+const [elimina, setElimina] = useState(0);
   const [dinheiro, setDinheiro] = useState(0);
   const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
   const [perguntasUsadas, setPerguntasUsadas] = useState(new Set());
@@ -241,7 +244,7 @@ const verificarResposta = (alternativa: { correta: any; }) => {
 <Modal visible={modalDicaVisible} transparent animationType="fade">
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTexto}>DICA:{"\n"}{pergunta?.dica}</Text>
+            <Text style={styles.modalTexto}>💡:{"\n"}{pergunta?.dica}</Text>
             <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
               <Text style={styles.botaoPararTexto}>Fechar</Text>
             </TouchableOpacity>
@@ -306,7 +309,7 @@ return (
             onPress={() => dica > 0 && setModalDicaVisible(true)}
             style={[styles.ajudaBotao, { backgroundColor: dica > 0 ? '#4CAF50' : '#999' }]}
           >
-            <Text style={styles.ajudaTexto}>💡</Text>
+            <Text style={styles.ajudaTexto}>DICA</Text>
             {dica > 0 && <View style={{
               position: 'absolute', top: -5, right: -5,
               backgroundColor: 'red', borderRadius: 10, width: 20, height: 20,
@@ -440,7 +443,7 @@ return (
 <Modal visible={modalDicaVisible} transparent animationType="fade">
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTexto}>DICA:{"\n"}{pergunta?.dica}</Text>
+            <Text style={styles.modalTexto}>💡:{"\n"}{pergunta?.dica}</Text>
             <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
               <Text style={styles.botaoPararTexto}>Fechar</Text>
             </TouchableOpacity>
@@ -473,7 +476,7 @@ const styles = StyleSheet.create({
   respostaBotao: { width: 140, height: 120, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   respostaTexto: { color: '#fff', fontWeight: 'bold', fontSize: 20 },
   ajudaContainer: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginTop: 10 },
-  ajudaBotao: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#2E2E54', justifyContent: 'center', alignItems: 'center' },
+  ajudaBotao: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#2E2E54', justifyContent: 'center', alignItems: 'center' },
   ajudaTexto: { color: '#fff', fontWeight: 'bold' },
   premiosContainer: { flexDirection: 'row', justifyContent: 'center', width: '100%', marginTop: 10, gap: 20 },
   premioBox: { padding: 10, borderRadius: 10, minWidth: 100, alignItems: 'center' },

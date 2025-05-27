@@ -209,7 +209,7 @@ def comprar_powerup(compra: Compra):
 @Conexao.consultar
 def obter_perfil(cursor, idAluno: int):
     cursor.execute("""
-        SELECT usuario_aluno, dinhero, (
+        SELECT usuario_aluno, dinhero, dica, pula, elimina, (
             SELECT SUM(numero_acertos) FROM Historico WHERE idAluno = %s
         ) as acertos, (
             SELECT SUM(total_perguntas) FROM Historico WHERE idAluno = %s
