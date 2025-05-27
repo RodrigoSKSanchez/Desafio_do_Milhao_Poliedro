@@ -122,11 +122,8 @@ def registrar_historico(dados: HistoricoEntrada):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 class RequisicaoPerfil(BaseModel):
     idAluno: int
-
-
 
 @app.get("/perfil_aluno")
 def rota_perfil_aluno(idAluno: int):
@@ -134,7 +131,6 @@ def rota_perfil_aluno(idAluno: int):
     if not resultado:
         raise HTTPException(status_code=404, detail="Aluno não encontrado.")
     
-    # Se vier como dicionário:
     if isinstance(resultado, dict):
         return {
         "email": resultado.get("usuario_aluno"),
@@ -146,13 +142,13 @@ def rota_perfil_aluno(idAluno: int):
         "elimina": resultado.get("elimina", 0)
     }
 
-    # Se vier como tupla:
     return {
         "email": resultado[0],
         "dinheiro": resultado[1] or 0,
         "acertos": resultado[2] or 0,
         "total": resultado[3] or 0
     }
+
 @Conexao.consultar
 def obter_historico(cursor, idAluno: int):
     cursor.execute(
@@ -165,10 +161,9 @@ def obter_historico(cursor, idAluno: int):
 def rota_historico_aluno(idAluno: int):
     return obter_historico(idAluno)
 
-
 class Compra(BaseModel):
     idAluno: int
-    tipo: str  # 'dica', 'pula' ou 'elimina'
+    tipo: str
 
 @Conexao.consultar
 def processar_compra(cursor, idAluno: int, tipo: str):
@@ -182,7 +177,6 @@ def processar_compra(cursor, idAluno: int, tipo: str):
         raise HTTPException(status_code=400, detail="Tipo de power-up inválido")
 
     preco = precos[tipo]
-
     cursor.execute("SELECT dinhero FROM Aluno WHERE idAluno = %s", (idAluno,))
     resultado = cursor.fetchone()
 
@@ -190,21 +184,17 @@ def processar_compra(cursor, idAluno: int, tipo: str):
         raise HTTPException(status_code=404, detail="Aluno não encontrado")
 
     dinhero_atual = resultado["dinhero"]
-
     if dinhero_atual < preco:
         raise HTTPException(status_code=400, detail="Saldo insuficiente")
 
     cursor.execute(f"""
-        UPDATE Aluno
-        SET dinhero = dinhero - %s, {tipo} = {tipo} + 1
-        WHERE idAluno = %s
+        UPDATE Aluno SET dinhero = dinhero - %s, {tipo} = {tipo} + 1 WHERE idAluno = %s
     """, (preco, idAluno))
 
 @app.post("/comprar_powerup")
 def comprar_powerup(compra: Compra):
     processar_compra(compra.idAluno, compra.tipo)
     return {"mensagem": f"{compra.tipo} comprado com sucesso"}
-
 
 @Conexao.consultar
 def obter_perfil(cursor, idAluno: int):
@@ -218,3 +208,27 @@ def obter_perfil(cursor, idAluno: int):
         WHERE idAluno = %s
     """, (idAluno, idAluno, idAluno))
     return cursor.fetchone()
+
+class UsoPowerup(BaseModel):
+    idAluno: int
+    tipo: str
+
+@Conexao.consultar
+def usar_powerup(cursor, dados: UsoPowerup):
+    if dados.tipo not in ["dica", "pula", "elimina"]:
+        raise HTTPException(status_code=400, detail="Tipo inválido.")
+
+    coluna = dados.tipo
+    cursor.execute(f"SELECT {coluna} FROM Aluno WHERE idAluno = %s", (dados.idAluno,))
+    resultado = cursor.fetchone()
+    valor = resultado[coluna] if isinstance(resultado, dict) else resultado[0]
+
+    if not resultado or valor <= 0:
+        raise HTTPException(status_code=400, detail="Power-up indisponível.")
+
+    cursor.execute(f"UPDATE Aluno SET {coluna} = {coluna} - 1 WHERE idAluno = %s", (dados.idAluno,))
+
+@app.post("/usar_powerup")
+def rota_usar_powerup(dados: UsoPowerup):
+    usar_powerup(dados)
+    return {"mensagem": f"{dados.tipo} usado com sucesso"}

@@ -125,6 +125,26 @@ if (!response.ok) {
   };
 
 
+
+  const usarPowerup = async (tipo: string, callback: () => void) => {
+    const idAluno = await AsyncStorage.getItem('idAluno');
+    const res = await fetch('http://localhost:8000/usar_powerup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idAluno: Number(idAluno), tipo })
+    });
+    if (res.ok) {
+      if (tipo === 'dica') setDica(prev => prev - 1);
+      if (tipo === 'pula') setPula(prev => prev - 1);
+      if (tipo === 'elimina') setElimina(prev => prev - 1);
+      callback();
+    } else {
+      const erro = await res.json();
+      console.warn('Erro:', erro.detail);
+    }
+  };
+
+
 const encerrarJogo = () => {
     router.replace({
       pathname: '/fim_de_jogo',
@@ -306,7 +326,7 @@ return (
         
         <View style={[styles.ajudaContainer]}>
           <TouchableOpacity
-            onPress={() => dica > 0 && setModalDicaVisible(true)}
+            onPress={() => dica > 0 && usarPowerup('dica', () => setModalDicaVisible(true))}
             style={[styles.ajudaBotao, { backgroundColor: dica > 0 ? '#4CAF50' : '#999' }]}
           >
             <Text style={styles.ajudaTexto}>DICA</Text>
@@ -318,7 +338,7 @@ return (
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => pula > 0 && buscarPergunta()}
+            onPress={() => pula > 0 && usarPowerup('pula', () => buscarPergunta())}
             style={[styles.ajudaBotao, { backgroundColor: pula > 0 ? '#4CAF50' : '#999' }]}
           >
             <Text style={styles.ajudaTexto}>⏭</Text>
@@ -330,7 +350,7 @@ return (
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => elimina > 0 && eliminarAlternativas()}
+            onPress={() => elimina > 0 && usarPowerup('elimina', () => eliminarAlternativas())}
             style={[styles.ajudaBotao, { backgroundColor: elimina > 0 ? '#4CAF50' : '#999' }]}
           >
             <Text style={styles.ajudaTexto}>1/2</Text>

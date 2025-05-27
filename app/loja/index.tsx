@@ -37,7 +37,7 @@ export default function LojaScreen() {
     carregarDados();
   }, []);
 
-  const comprarItem = async (tipo, preco) => {
+  const comprarItem = async (tipo: string, preco: number) => {
     const idAluno = await AsyncStorage.getItem('idAluno');
     if (dinheiro < preco) return;
 
