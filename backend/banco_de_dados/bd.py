@@ -27,10 +27,18 @@ class Conexao:
     def inserir_historico(id_aluno, numero_acertos, total_perguntas, dinheiro_ganho):
         with mysql.connector.connect(**Conexao.banco_de_dados) as conexao:
             with conexao.cursor() as cursor:
+                # Inserir no histórico
                 query = """
                     INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, dinheiro_ganho)
                     VALUES (%s, %s, %s, %s)
                 """
                 valores = (id_aluno, numero_acertos, total_perguntas, dinheiro_ganho)
                 cursor.execute(query, valores)
+
+                # Atualizar o dinheiro do aluno
+                cursor.execute(
+                    "UPDATE Aluno SET dinhero = dinhero + %s WHERE idAluno = %s",
+                    (dinheiro_ganho, id_aluno)
+                )
+
                 conexao.commit()
