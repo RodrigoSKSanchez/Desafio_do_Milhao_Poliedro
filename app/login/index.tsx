@@ -39,6 +39,12 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
+    if (!email || !senha) {
+      setMensagemErro('Preencha todos os campos.');
+      setModalVisible(true);
+      return;
+    }
+
     try {
       const response = await fetch('http://127.0.0.1:8000/login', {
         method: 'POST',

@@ -46,6 +46,11 @@ export default function CadastroScreen() {
   };
 
   const handleCadastro = async () => {
+    if (!email || !senha || !confirmarSenha) {
+      mostrarErro('Preencha todos os campos.');
+      return;
+    }
+
     if (senha !== confirmarSenha) {
       mostrarErro('As senhas não são iguais!');
       return;
