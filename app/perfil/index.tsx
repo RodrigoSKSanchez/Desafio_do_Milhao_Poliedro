@@ -40,10 +40,11 @@ export default function PerfilScreen() {
   }, []);
 
   const tema = {
+    iconeBg: isDark ? '#333' : '#FDD3E4',
+    voltarBg: isDark ? '#555' : '#BDBDBD',
     fundo: isDark ? '#000' : '#FAFAFA',
     texto: isDark ? '#fff' : '#000',
-    cards: isDark ? '#333' : '#4C5C99',
-    voltar: '#C62828',
+    cards: '#4C5C99',
     modal: isDark ? '#222' : '#fff',
   };
 
@@ -62,22 +63,20 @@ export default function PerfilScreen() {
         <Text style={styles.cardText}>Perguntas acertadas: {acertos}/{total}</Text>
       </View>
       <View style={[styles.card, { backgroundColor: tema.cards }]}>
-        
         <Text style={styles.cardText}>
-            Dinheiro acumulado: R${dinheiro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          Dinheiro acumulado: R${dinheiro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </Text>
-
       </View>
 
       <TouchableOpacity
-        style={[styles.historyButton, { backgroundColor: '#BDBDBD' }]}
+        style={[styles.historyButton, { backgroundColor: '#26264F' }]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.historyText}>HISTÓRICO</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.voltarButton, { backgroundColor: tema.voltar }]}
+        style={[styles.voltarButton, { backgroundColor: tema.voltarBg }]}
         onPress={() => router.replace('/jogo_menu')}
       >
         <Text style={styles.voltarText}>VOLTAR</Text>
@@ -92,7 +91,7 @@ export default function PerfilScreen() {
             <ScrollView style={{ maxHeight: 300 }}>
               {historico.map((item, index) => (
                 <Text key={index} style={{ color: tema.texto }}>
-                  • {item.numero_acertos}/{item.total_perguntas} - R$ {item.dinheiro_ganho}
+                  • {item.numero_acertos}/{item.total_perguntas} - R${item.dinheiro_ganho.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </Text>
               ))}
             </ScrollView>
@@ -107,26 +106,44 @@ export default function PerfilScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 60, paddingHorizontal: 30 },
-  topBar: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 30,
+    gap: 20,
   },
-  title: { fontSize: 28, fontWeight: 'bold' },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 130,
+    paddingHorizontal: 10,
+  },
+  title: { fontSize: 30, fontWeight: 'bold' },
   nomeAluno: { fontSize: 15, fontWeight: 'normal' },
   iconButton: { borderRadius: 20, padding: 10 },
   card: {
-    padding: 20, borderRadius: 15, marginBottom: 20,
+    padding: 20, borderRadius: 20,
     maxWidth: 500, width: '100%', alignSelf: 'center',
   },
   cardText: { color: '#fff', fontSize: 16 },
   historyButton: {
-    paddingVertical: 15, alignItems: 'center', borderRadius: 10,
-    maxWidth: 500, width: '100%', alignSelf: 'center', marginTop: 10,
+    paddingVertical: 30,
+    borderRadius: 20,
+    alignItems: 'center',
+    maxWidth: 500,
+    width: '100%',
+    alignSelf: 'center',
   },
-  historyText: { color: '#fff', fontWeight: 'bold' },
+  historyText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   voltarButton: {
-    paddingVertical: 15, alignItems: 'center', borderRadius: 10,
-    maxWidth: 500, width: '100%', alignSelf: 'center', marginTop: 40,
+    paddingVertical: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    maxWidth: 500,
+    width: '100%',
+    alignSelf: 'center',
+    marginTop:30,
   },
   voltarText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   modalOverlay: {
