@@ -13,7 +13,6 @@ class Conexao:
 
     @staticmethod
     def consultar(func):
-        from functools import wraps
         @wraps(func)
         def criar_consulta(*args, **kwargs):
             with mysql.connector.connect(**Conexao.banco_de_dados) as acessar_banco:
@@ -25,13 +24,13 @@ class Conexao:
         return criar_consulta
 
     @staticmethod
-    def inserir_historico(id_aluno, numero_acertos, total_perguntas, saldo_final):
+    def inserir_historico(id_aluno, numero_acertos, total_perguntas, dinheiro_ganho):
         with mysql.connector.connect(**Conexao.banco_de_dados) as conexao:
             with conexao.cursor() as cursor:
                 query = """
-                    INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, saldo_final)
+                    INSERT INTO Historico (idAluno, numero_acertos, total_perguntas, dinheiro_ganho)
                     VALUES (%s, %s, %s, %s)
                 """
-                valores = (id_aluno, numero_acertos, total_perguntas, saldo_final)
+                valores = (id_aluno, numero_acertos, total_perguntas, dinheiro_ganho)
                 cursor.execute(query, valores)
                 conexao.commit()

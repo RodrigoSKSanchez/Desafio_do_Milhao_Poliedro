@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Adiciona o middleware de CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -77,7 +77,6 @@ def login_aluno(aluno: AlunoLogin):
     else:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos.")
 
-
 @app.post("/trocar_senha")
 def trocar_senha(dados: TrocarSenha):
     usuario = dados.usuario_aluno
@@ -93,7 +92,6 @@ def trocar_senha(dados: TrocarSenha):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Erro ao atualizar senha: " + str(e))
 
-
 from banco_de_dados.perguntas import Perguntas
 
 @app.get("/pergunta")
@@ -104,13 +102,12 @@ def obter_pergunta(ano: int, excluidos: str = Query("", alias="excluidos")):
         raise HTTPException(status_code=404, detail="Nenhuma pergunta encontrada para o ano especificado.")
     return pergunta
 
-
-# FINAL - Histórico de jogo
+# Histórico de jogo
 class HistoricoEntrada(BaseModel):
     idAluno: int
     numero_acertos: int
     total_perguntas: int
-    saldo_final: int
+    dinheiro_ganho: int
 
 @app.post("/registrar_historico")
 def registrar_historico(dados: HistoricoEntrada):
@@ -119,7 +116,7 @@ def registrar_historico(dados: HistoricoEntrada):
             dados.idAluno,
             dados.numero_acertos,
             dados.total_perguntas,
-            dados.saldo_final
+            dados.dinheiro_ganho
         )
         return {"mensagem": "Histórico registrado com sucesso"}
     except Exception as e:
