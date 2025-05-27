@@ -121,3 +121,53 @@ def registrar_historico(dados: HistoricoEntrada):
         return {"mensagem": "Histórico registrado com sucesso"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+class RequisicaoPerfil(BaseModel):
+    idAluno: int
+
+@Conexao.consultar
+def obter_perfil(cursor, idAluno: int):
+    cursor.execute(
+        "SELECT usuario_aluno, "
+        "(SELECT SUM(dinheiro_ganho) FROM Historico WHERE idAluno = %s) as dinheiro, "
+        "(SELECT SUM(numero_acertos) FROM Historico WHERE idAluno = %s) as acertos, "
+        "(SELECT SUM(total_perguntas) FROM Historico WHERE idAluno = %s) as total "
+        "FROM Aluno WHERE idAluno = %s",
+        (idAluno, idAluno, idAluno, idAluno)
+    )
+    return cursor.fetchone()
+
+@app.get("/perfil_aluno")
+def rota_perfil_aluno(idAluno: int):
+    resultado = obter_perfil(idAluno)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Aluno não encontrado.")
+    
+    # Se vier como dicionário:
+    if isinstance(resultado, dict):
+        return {
+            "email": resultado.get("usuario_aluno"),
+            "dinheiro": resultado.get("dinheiro", 0),
+            "acertos": resultado.get("acertos", 0),
+            "total": resultado.get("total", 0)
+        }
+
+    # Se vier como tupla:
+    return {
+        "email": resultado[0],
+        "dinheiro": resultado[1] or 0,
+        "acertos": resultado[2] or 0,
+        "total": resultado[3] or 0
+    }
+@Conexao.consultar
+def obter_historico(cursor, idAluno: int):
+    cursor.execute(
+        "SELECT numero_acertos, total_perguntas, dinheiro_ganho FROM Historico WHERE idAluno = %s ORDER BY idHistorico DESC LIMIT 10",
+        (idAluno,)
+    )
+    return cursor.fetchall()
+
+@app.get("/historico_aluno")
+def rota_historico_aluno(idAluno: int):
+    return obter_historico(idAluno)
