@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     width: '100%',
     alignSelf: 'center',
+    marginTop: 30,
   },
   voltarText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   modalOverlay: {
