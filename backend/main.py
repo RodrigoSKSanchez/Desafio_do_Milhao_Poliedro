@@ -126,17 +126,7 @@ def registrar_historico(dados: HistoricoEntrada):
 class RequisicaoPerfil(BaseModel):
     idAluno: int
 
-@Conexao.consultar
-def obter_perfil(cursor, idAluno: int):
-    cursor.execute(
-        "SELECT usuario_aluno, "
-        "(SELECT SUM(dinheiro_ganho) FROM Historico WHERE idAluno = %s) as dinheiro, "
-        "(SELECT SUM(numero_acertos) FROM Historico WHERE idAluno = %s) as acertos, "
-        "(SELECT SUM(total_perguntas) FROM Historico WHERE idAluno = %s) as total "
-        "FROM Aluno WHERE idAluno = %s",
-        (idAluno, idAluno, idAluno, idAluno)
-    )
-    return cursor.fetchone()
+
 
 @app.get("/perfil_aluno")
 def rota_perfil_aluno(idAluno: int):
@@ -148,7 +138,7 @@ def rota_perfil_aluno(idAluno: int):
     if isinstance(resultado, dict):
         return {
             "email": resultado.get("usuario_aluno"),
-            "dinheiro": resultado.get("dinheiro", 0),
+            "dinheiro": resultado.get("dinhero", 0),
             "acertos": resultado.get("acertos", 0),
             "total": resultado.get("total", 0)
         }
@@ -211,3 +201,17 @@ def processar_compra(cursor, idAluno: int, tipo: str):
 def comprar_powerup(compra: Compra):
     processar_compra(compra.idAluno, compra.tipo)
     return {"mensagem": f"{compra.tipo} comprado com sucesso"}
+
+
+@Conexao.consultar
+def obter_perfil(cursor, idAluno: int):
+    cursor.execute("""
+        SELECT usuario_aluno, dinhero, (
+            SELECT SUM(numero_acertos) FROM Historico WHERE idAluno = %s
+        ) as acertos, (
+            SELECT SUM(total_perguntas) FROM Historico WHERE idAluno = %s
+        ) as total
+        FROM Aluno
+        WHERE idAluno = %s
+    """, (idAluno, idAluno, idAluno))
+    return cursor.fetchone()
