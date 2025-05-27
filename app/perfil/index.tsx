@@ -15,6 +15,10 @@ export default function PerfilScreen() {
   const [total, setTotal] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [historico, setHistorico] = useState([]);
+const [dica, setDica] = useState(0);
+const [pula, setPula] = useState(0);
+const [elimina, setElimina] = useState(0);
+const [modalInventario, setModalInventario] = useState(false);
 
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -31,6 +35,9 @@ export default function PerfilScreen() {
       setDinheiro(dados.dinheiro);
       setAcertos(dados.acertos);
       setTotal(dados.total);
+      setDica(dados.dica || 0);
+      setPula(dados.pula || 0);
+      setElimina(dados.elimina || 0);
 
       const resHistorico = await fetch(`http://localhost:8000/historico_aluno?idAluno=${idAluno}`);
       const historicoJson = await resHistorico.json();
@@ -69,6 +76,13 @@ export default function PerfilScreen() {
       </View>
 
       <TouchableOpacity
+        style={[styles.inventarioButton, { backgroundColor: '#4CAF50' }]}
+        onPress={() => setModalInventario(true)}
+      >
+        <Text style={styles.historyText}>INVENTÁRIO</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={[styles.historyButton, { backgroundColor: '#26264F' }]}
         onPress={() => setModalVisible(true)}
       >
@@ -105,6 +119,22 @@ export default function PerfilScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal visible={modalInventario} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalBox, { backgroundColor: tema.modal }]}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 10, color: tema.texto }}>
+              Seus Power-ups:
+            </Text>
+            <Text style={{ color: tema.texto }}>Dicas: {dica}</Text>
+            <Text style={{ color: tema.texto }}>Pula Pergunta: {pula}</Text>
+            <Text style={{ color: tema.texto }}>Elimina Alternativas: {elimina}</Text>
+            <TouchableOpacity onPress={() => setModalInventario(false)} style={styles.closeButton}>
+              <Text style={{ color: '#fff' }}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -131,6 +161,16 @@ const styles = StyleSheet.create({
     maxWidth: 500, width: '100%', alignSelf: 'center',
   },
   cardText: { color: '#fff', fontSize: 16 },
+
+  inventarioButton:{
+    paddingVertical: 25,
+    borderRadius: 20,
+    alignItems: 'center',
+    maxWidth: 500,
+    width: '100%',
+    alignSelf: 'center',    
+  },
+
   historyButton: {
     paddingVertical: 30,
     borderRadius: 20,
