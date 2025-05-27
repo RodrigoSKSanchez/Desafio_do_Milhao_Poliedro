@@ -64,7 +64,7 @@ export default function PerfilScreen() {
       </View>
       <View style={[styles.card, { backgroundColor: tema.cards }]}>
         <Text style={styles.cardText}>
-          Dinheiro acumulado: R${(dinheiro || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          Saldo: R${(dinheiro || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </Text>
       </View>
 
