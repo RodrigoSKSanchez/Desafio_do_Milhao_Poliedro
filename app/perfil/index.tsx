@@ -64,7 +64,7 @@ export default function PerfilScreen() {
       </View>
       <View style={[styles.card, { backgroundColor: tema.cards }]}>
         <Text style={styles.cardText}>
-          Dinheiro acumulado: R${dinheiro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          Dinheiro acumulado: R${(dinheiro || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </Text>
       </View>
 
@@ -89,11 +89,15 @@ export default function PerfilScreen() {
               Últimos 10 jogos:
             </Text>
             <ScrollView style={{ maxHeight: 300 }}>
-              {historico.map((item, index) => (
-                <Text key={index} style={{ color: tema.texto }}>
-                  • {item.numero_acertos}/{item.total_perguntas} - R${item.dinheiro_ganho.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </Text>
-              ))}
+              {historico.length === 0 ? (
+  <Text style={{ color: tema.texto }}>Nenhuma partida registrada ainda.</Text>
+) : (
+  historico.map((item, index) => (
+    <Text key={index} style={{ color: tema.texto }}>
+      • {item.numero_acertos}/{item.total_perguntas} - R${(item.dinheiro_ganho || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+    </Text>
+  ))
+)}
             </ScrollView>
             <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
               <Text style={{ color: '#fff' }}>Fechar</Text>
@@ -118,8 +122,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 130,
     paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 60,
   },
-  title: { fontSize: 30, fontWeight: 'bold' },
+  title: { fontSize: 28, fontWeight: 'bold' },
   nomeAluno: { fontSize: 15, fontWeight: 'normal' },
   iconButton: { borderRadius: 20, padding: 10 },
   card: {
@@ -143,7 +151,6 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     width: '100%',
     alignSelf: 'center',
-    marginTop:30,
   },
   voltarText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   modalOverlay: {
