@@ -45,6 +45,7 @@ export default function JogoScreen() {
   const [respostaCorreta, setRespostaCorreta] = useState(null);
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
+const [modalDicaVisible, setModalDicaVisible] = useState(false);
   const [dinheiro, setDinheiro] = useState(0);
   const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
   const [perguntasUsadas, setPerguntasUsadas] = useState(new Set());
@@ -107,7 +108,21 @@ if (!response.ok) {
   }
 };
 
-  const encerrarJogo = () => {
+  
+  const eliminarAlternativas = () => {
+    const alternativasErradas = pergunta.alternativas.filter(a => !a.correta);
+    const remover = alternativasErradas.slice(0, 2).map(a => a.letra);
+    setPergunta(prev => ({
+      ...prev,
+      alternativas: prev.alternativas.map(a => ({
+        ...a,
+        texto: remover.includes(a.letra) ? '---' : a.texto
+      }))
+    }));
+  };
+
+
+const encerrarJogo = () => {
     router.replace({
       pathname: '/fim_de_jogo',
       params: {
@@ -120,6 +135,15 @@ if (!response.ok) {
   };
 
   useEffect(() => {
+    const carregarPowerups = async () => {
+      const idAluno = await AsyncStorage.getItem('idAluno');
+      const res = await fetch(`http://localhost:8000/perfil_aluno?idAluno=${idAluno}`);
+      const dados = await res.json();
+      setDica(dados.dica || 0);
+      setPula(dados.pula || 0);
+      setElimina(dados.elimina || 0);
+    };
+    carregarPowerups();
     buscarPergunta();
   }, [anoAtual]);
 
@@ -211,7 +235,20 @@ const verificarResposta = (alternativa: { correta: any; }) => {
             </TouchableOpacity>
           </View>
         </View>
+      
       </Modal>
+
+<Modal visible={modalDicaVisible} transparent animationType="fade">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTexto}>DICA:{"\n"}{pergunta?.dica}</Text>
+            <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
+              <Text style={styles.botaoPararTexto}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -263,7 +300,46 @@ return (
           </View>
         </View>
 
-        <View style={styles.premiosContainer}>
+        
+        <View style={[styles.ajudaContainer]}>
+          <TouchableOpacity
+            onPress={() => dica > 0 && setModalDicaVisible(true)}
+            style={[styles.ajudaBotao, { backgroundColor: dica > 0 ? '#4CAF50' : '#999' }]}
+          >
+            <Text style={styles.ajudaTexto}>💡</Text>
+            {dica > 0 && <View style={{
+              position: 'absolute', top: -5, right: -5,
+              backgroundColor: 'red', borderRadius: 10, width: 20, height: 20,
+              justifyContent: 'center', alignItems: 'center'
+            }}><Text style={{ color: '#fff', fontSize: 12 }}>{dica}</Text></View>}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => pula > 0 && buscarPergunta()}
+            style={[styles.ajudaBotao, { backgroundColor: pula > 0 ? '#4CAF50' : '#999' }]}
+          >
+            <Text style={styles.ajudaTexto}>⏭</Text>
+            {pula > 0 && <View style={{
+              position: 'absolute', top: -5, right: -5,
+              backgroundColor: 'red', borderRadius: 10, width: 20, height: 20,
+              justifyContent: 'center', alignItems: 'center'
+            }}><Text style={{ color: '#fff', fontSize: 12 }}>{pula}</Text></View>}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => elimina > 0 && eliminarAlternativas()}
+            style={[styles.ajudaBotao, { backgroundColor: elimina > 0 ? '#4CAF50' : '#999' }]}
+          >
+            <Text style={styles.ajudaTexto}>1/2</Text>
+            {elimina > 0 && <View style={{
+              position: 'absolute', top: -5, right: -5,
+              backgroundColor: 'red', borderRadius: 10, width: 20, height: 20,
+              justifyContent: 'center', alignItems: 'center'
+            }}><Text style={{ color: '#fff', fontSize: 12 }}>{elimina}</Text></View>}
+          </TouchableOpacity>
+        </View>
+
+<View style={styles.premiosContainer}>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
             <Text style={styles.premioTexto}>Errar{"\n"}-100.000{"\n"}R$ {Math.max(dinheiro - 100000, 0).toLocaleString('pt-BR')}</Text>
           </View>
@@ -358,7 +434,20 @@ return (
             </TouchableOpacity>
           </View>
         </View>
+      
       </Modal>
+
+<Modal visible={modalDicaVisible} transparent animationType="fade">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTexto}>DICA:{"\n"}{pergunta?.dica}</Text>
+            <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
+              <Text style={styles.botaoPararTexto}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
