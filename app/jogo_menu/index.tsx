@@ -40,7 +40,8 @@ export default function JogoScreen() {
       <View style={styles.topBar}>
         <Text style={[styles.olaText, { color: tema.texto }]}>Olá <Text style={styles.nomeAluno}>{nomeAluno}</Text></Text>
 
-        <TouchableOpacity style={[styles.iconButton, { backgroundColor: tema.iconeBg }]}>
+        <TouchableOpacity style={[styles.iconButton, { backgroundColor: tema.iconeBg }]}
+        onPress={() => router.push('../perfil')}>
           <Ionicons name="person-outline" size={24} color={tema.texto} />
         </TouchableOpacity>
       </View>
