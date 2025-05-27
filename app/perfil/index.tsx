@@ -122,12 +122,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 130,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 60,
   },
-  title: { fontSize: 28, fontWeight: 'bold' },
+  title: { fontSize: 30, fontWeight: 'bold' },
   nomeAluno: { fontSize: 15, fontWeight: 'normal' },
   iconButton: { borderRadius: 20, padding: 10 },
   card: {
