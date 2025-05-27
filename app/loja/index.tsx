@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -23,7 +22,7 @@ export default function LojaScreen() {
     texto: isDark ? '#fff' : '#000',
     voltar: isDark ? '#555' : '#BDBDBD',
     ativo: '#4C9A81',
-    inativo: '#BDBDBD',
+    inativo: '#383838',
   };
 
   useEffect(() => {
@@ -67,6 +66,7 @@ export default function LojaScreen() {
   return (
     <View style={[styles.container, { backgroundColor: tema.fundo }]}>
       <Text style={[styles.titulo, { color: tema.texto }]}>Power-Ups</Text>
+      <Text style={[styles.dinheiroTexto, { color: tema.texto }]}>Seu saldo: R$ {dinheiro.toLocaleString('pt-BR')}</Text>
 
       <TouchableOpacity
         style={[styles.botao, { backgroundColor: dinheiro >= precos.pula ? tema.ativo : tema.inativo }]}
@@ -116,7 +116,12 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  dinheiroTexto: {
+    fontSize: 20,
     marginBottom: 20,
+    fontWeight: 'bold',
   },
   botao: {
     borderRadius: 20,
