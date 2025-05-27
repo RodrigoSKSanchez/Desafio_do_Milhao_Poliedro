@@ -137,11 +137,14 @@ def rota_perfil_aluno(idAluno: int):
     # Se vier como dicionário:
     if isinstance(resultado, dict):
         return {
-            "email": resultado.get("usuario_aluno"),
-            "dinheiro": resultado.get("dinhero", 0),
-            "acertos": resultado.get("acertos", 0),
-            "total": resultado.get("total", 0)
-        }
+        "email": resultado.get("usuario_aluno"),
+        "dinheiro": resultado.get("dinhero", 0),
+        "acertos": resultado.get("acertos", 0),
+        "total": resultado.get("total", 0),
+        "dica": resultado.get("dica", 0),
+        "pula": resultado.get("pula", 0),
+        "elimina": resultado.get("elimina", 0)
+    }
 
     # Se vier como tupla:
     return {

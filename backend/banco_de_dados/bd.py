@@ -7,7 +7,7 @@ class Conexao:
         "host": "localhost",
         "user": usuario,
         "password": senha,
-        "database": "defaultdb",
+        "database": "poliedro",
         "port": "3306"
     }
 
