@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { useTheme } from '../../context/ThemeContext';
+import { FiMaximize } from 'react-icons/fi';
 
 
 import { useRouter } from 'expo-router';
@@ -338,8 +339,12 @@ return (
       <View style={[styles.content, isDesktop && styles.contentDesktop]}>
         <TouchableOpacity
           style={[styles.perguntaBox, { backgroundColor: cores.box }]}
-          onPress={() => setModalPerguntaVisible(true)}
-        >
+          onPress={() => setModalPerguntaVisible(true)}>
+
+          <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={() => setModalPerguntaVisible(true)}>
+            <FiMaximize size={20} color="white" />
+          </TouchableOpacity>
+
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
           {(pergunta?.alternativas || []).map((alt: Alternativa, index) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
@@ -572,7 +577,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { flex: 1, padding: 20, justifyContent: 'space-around', alignItems: 'center' },
   contentDesktop: { paddingHorizontal: 40 },
-  perguntaBox: { width: '90%', borderRadius: 10, padding: 16, maxWidth: 800, marginBottom:10 },
+  perguntaBox: { width: '90%', borderRadius: 10, padding: 16, maxWidth: 800, marginBottom:10, position: 'relative' },
   perguntaTexto: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   perguntaAlternativaTexto: { color: '#fff', fontSize: 12, marginTop: 4 },
   valorAtualContainer: { marginTop: 10 },
