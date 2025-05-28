@@ -246,7 +246,8 @@ const verificarResposta = (alternativa: { correta: any; }) => {
   } else {
     if (!pergunta) return;
 
-    const novaQuantia = Math.max(dinheiro - 100000, 0);
+    const checkpoint = Math.floor(dinheiro / 100000) * 100000;
+    const novaQuantia = Math.max(checkpoint, 0);
     setDinheiro(novaQuantia);
 
     const correta = pergunta.alternativas.find((a) => a.correta);
@@ -458,7 +459,7 @@ return (
 
 <View style={styles.premiosContainer}>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
-            <Text style={styles.premioTexto}>Errar{"\n"}-100.000{"\n"}R$ {Math.max(dinheiro - 100000, 0).toLocaleString('pt-BR')}</Text>
+            <Text style={styles.premioTexto}>Errar{"\n"}Checkpoint{"\n"}R$ {Math.max(Math.floor(dinheiro / 100000) * 100000, 0).toLocaleString('pt-BR')}</Text>
           </View>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
             <Text style={styles.premioTexto}>Parar{"\n"}+50%{"\n"}R$ {(dinheiro * 0.5).toLocaleString('pt-BR')}</Text>
