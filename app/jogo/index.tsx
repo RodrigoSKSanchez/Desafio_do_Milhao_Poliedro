@@ -57,7 +57,6 @@ const [elimina, setElimina] = useState(0);
         body: JSON.stringify({
           idAluno,
           numero_acertos: contadorQuestoes,
-          total_perguntas: 15,
           dinheiro_ganho: dinheiro
         })
       });
@@ -459,8 +458,7 @@ return (
       params: {
         total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
-        respondidas: contadorQuestoes.toString(),
-        total: totalPerguntas.toString()}
+        respondidas: contadorQuestoes.toString(),}
     });
               }}
             >
