@@ -283,7 +283,9 @@ const verificarResposta = (alternativa: { correta: any; }) => {
 <Modal visible={modalDicaVisible} transparent animationType="fade">
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
+
             <Text style={styles.modalTexto}>💡:{"\n"}{pergunta?.dica}</Text>
+            
             <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
               <Text style={styles.botaoPararTexto}>Fechar</Text>
             </TouchableOpacity>
@@ -304,7 +306,7 @@ return (
           onPress={() => setModalPerguntaVisible(true)}
         >
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
-          {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+          {(pergunta?.alternativas || []).map((alt: Alternativa, index) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -405,7 +407,7 @@ return (
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
-            {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).map((alt: Alternativa, index) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
@@ -527,9 +529,3 @@ const styles = StyleSheet.create({
   fecharModalTexto: { color: 'red', fontSize: 22, fontWeight: 'bold' },
 });
 
-
-
-function setModalVitoriaVisible(arg0: boolean) {
-  throw new Error('Function not implemented.');
-}
-      
