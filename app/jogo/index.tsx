@@ -37,7 +37,7 @@ export default function JogoScreen() {
   const [contadorQuestoes, setContadorQuestoes] = useState(0);
   const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [modalErro, setModalErro] = useState(false);
-  const [respostaCorreta, setRespostaCorreta] = useState(null);
+  const [respostaCorreta, setRespostaCorreta] = useState<Alternativa | null>(null);
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
 const [modalDicaVisible, setModalDicaVisible] = useState(false);
@@ -206,9 +206,9 @@ const verificarResposta = (alternativa: { correta: any; }) => {
     setDinheiro(novoDinheiro);
 
     if (novoDinheiro >= MAX_DINHEIRO && !modalVitoriaVisible) {
-    setModalVitoriaVisible(true);
-    // Não interrompe o fluxo com return
-  }
+      setModalVitoriaVisible(true);
+      // Não interrompe o fluxo com return
+    }
 
     if (novaContagem % 10 === 0 && anoAtual < 13) {
       setAnoAtual((prev) => prev + 1);
@@ -218,8 +218,12 @@ const verificarResposta = (alternativa: { correta: any; }) => {
   } else {
     const novaQuantia = Math.max(dinheiro - 100000, 0);
     setDinheiro(novaQuantia);
+
+    if (!pergunta) return;
+
     const correta = pergunta.alternativas.find((a: { correta: any; }) => a.correta);
-    
+    setRespostaCorreta(correta || null);
+    setModalErro(true);
   }
 };
 
@@ -532,7 +536,5 @@ const styles = StyleSheet.create({
 
 
 
-function setModalVitoriaVisible(arg0: boolean) {
-  throw new Error('Function not implemented.');
-}
+
       
