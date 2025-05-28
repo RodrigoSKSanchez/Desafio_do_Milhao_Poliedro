@@ -21,9 +21,9 @@ export default function FimDeJogoScreen() {
 
       const payload = {
         idAluno: Number(idAluno),
-        numero_acertos: parseInt(respondidas ?? '0'),
-        total_perguntas: parseInt(total ?? '0'),
-        dinheiro_ganho: parseInt(dinheiro ?? '0')
+        numero_acertos: parseInt((respondidas ?? '0') as string),
+        total_perguntas: parseInt((total ?? '0') as string),
+        dinheiro_ganho: parseInt((dinheiro ?? '0') as string)
       };
 
       console.log("Dados enviados:", payload);

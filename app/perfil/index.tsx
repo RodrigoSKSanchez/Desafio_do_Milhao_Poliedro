@@ -7,6 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
 
+type HistoricoItem = {
+  numero_acertos: number;
+  total_perguntas: number;
+  dinheiro_ganho: number;
+};
+
 export default function PerfilScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -14,7 +20,7 @@ export default function PerfilScreen() {
   const [acertos, setAcertos] = useState(0);
   const [total, setTotal] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [historico, setHistorico] = useState([]);
+  const [historico, setHistorico] = useState<HistoricoItem[]>([]);
 const [dica, setDica] = useState(0);
 const [pula, setPula] = useState(0);
 const [elimina, setElimina] = useState(0);
@@ -108,7 +114,7 @@ const [modalInventario, setModalInventario] = useState(false);
 ) : (
   historico.map((item, index) => (
     <Text key={index} style={{ color: tema.texto }}>
-      • {item.numero_acertos}/{item.total_perguntas} - R${(item.dinheiro_ganho || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+      • {item["numero_acertos"]}/{item["total_perguntas"]} - R${(item["dinheiro_ganho"] || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
     </Text>
   ))
 )}
