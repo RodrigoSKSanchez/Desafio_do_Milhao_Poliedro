@@ -47,6 +47,10 @@ const [elimina, setElimina] = useState(0);
   const [dinheiro, setDinheiro] = useState(0);
   const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
   const [alternativasDesativadas, setAlternativasDesativadas] = useState<string[]>([]);
+  
+  const [usouDica, setUsouDica] = useState(false);
+  const [usouElimina, setUsouElimina] = useState(false);
+
   const finalizarJogo = async () => {
     const idAluno = await AsyncStorage.getItem('idAluno');
     try {
@@ -113,6 +117,10 @@ if (!response.ok) {
     const alternativasComLetra = letras.map((letra, i) => ({ ...alternativasEmbaralhadas[i], letra }));
 
     setAlternativasDesativadas([]);
+    
+    setUsouDica(false);
+    setUsouElimina(false);
+
     setPergunta({
       id: data.id,
       enunciado: data.enunciado,
@@ -158,7 +166,14 @@ if (!response.ok) {
 
 
 
+  
   const usarPowerup = async (tipo: string, callback: () => void) => {
+    if (tipo === 'elimina' && usouElimina) return;
+    if (tipo === 'dica' && usouDica) {
+      callback(); 
+      return;
+    }
+
     const idAluno = await AsyncStorage.getItem('idAluno');
     const res = await fetch('http://localhost:8000/usar_powerup', {
       method: 'POST',
@@ -166,15 +181,22 @@ if (!response.ok) {
       body: JSON.stringify({ idAluno: Number(idAluno), tipo })
     });
     if (res.ok) {
-      if (tipo === 'dica') setDica(prev => prev - 1);
+      if (tipo === 'dica') {
+        setDica(prev => prev - 1);
+        setUsouDica(true);
+      }
       if (tipo === 'pula') setPula(prev => prev - 1);
-      if (tipo === 'elimina') setElimina(prev => prev - 1);
+      if (tipo === 'elimina') {
+        setElimina(prev => prev - 1);
+        setUsouElimina(true);
+      }
       callback();
     } else {
       const erro = await res.json();
       console.warn('Erro:', erro.detail);
     }
   };
+
 
 
 const encerrarJogo = () => {
