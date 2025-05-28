@@ -10,6 +10,21 @@ import { useTheme } from '../../context/ThemeContext';
 
 
 import { useRouter } from 'expo-router';
+
+type Alternativa = {
+  texto: string;
+  correta: boolean;
+  letra?: string;
+};
+
+type Pergunta = {
+  id: number;
+  enunciado: string;
+  ano: number;
+  dica: string;
+  alternativas: Alternativa[];
+};
+
   
 export default function JogoScreen() {
   const { theme } = useTheme();
