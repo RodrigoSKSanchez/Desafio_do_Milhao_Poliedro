@@ -133,8 +133,11 @@ if (!response.ok) {
     if (!pergunta) return;
 
     const alternativasErradas = pergunta.alternativas.filter((a) => !a.correta);
-    const remover = alternativasErradas
-      .slice(0, 2)
+    const alternativasAleatorias = alternativasErradas
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2);
+
+    const remover = alternativasAleatorias
       .map((a) => a.letra)
       .filter((letra): letra is string => letra !== undefined);
 
