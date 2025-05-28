@@ -462,7 +462,7 @@ return (
             <Text style={styles.premioTexto}>Errar{"\n"}Checkpoint{"\n"}R$ {Math.max(Math.floor(dinheiro / 100000) * 100000, 0).toLocaleString('pt-BR')}</Text>
           </View>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
-            <Text style={styles.premioTexto}>Parar{"\n"}+50%{"\n"}R$ {(dinheiro * 0.5).toLocaleString('pt-BR')}</Text>
+            <Text style={styles.premioTexto}>Parar{"\n"}-50%{"\n"}R$ {(dinheiro * 0.5).toLocaleString('pt-BR')}</Text>
           </View>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
             <Text style={styles.premioTexto}>Acertar{"\n"}+20.000{"\n"}R$ {(dinheiro + 20000).toLocaleString('pt-BR')}</Text>
