@@ -168,7 +168,6 @@ const encerrarJogo = () => {
         total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
         respondidas: contadorQuestoes.toString(),
-        total: totalPerguntas.toString(),
       },
     });
   };
@@ -230,7 +229,6 @@ const verificarResposta = (alternativa: { correta: any; }) => {
         total: totalPerguntas.toString(),
         dinheiro: valorFinal.toString(),
         respondidas: contadorQuestoes.toString(),
-        total: totalPerguntas.toString(),
       },
     });
   };
@@ -264,9 +262,7 @@ const verificarResposta = (alternativa: { correta: any; }) => {
       params: {
         total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
-        respondidas: contadorQuestoes.toString(),
-        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
-      }
+        respondidas: contadorQuestoes.toString(),}
     });
               }}
             >
@@ -464,8 +460,7 @@ return (
         total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
         respondidas: contadorQuestoes.toString(),
-        total: (contadorQuestoes + Math.floor(dinheiro / 20000 - contadorQuestoes)).toString()
-      }
+        total: totalPerguntas.toString()}
     });
               }}
             >
