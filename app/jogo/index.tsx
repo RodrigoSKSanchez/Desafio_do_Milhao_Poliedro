@@ -32,7 +32,7 @@ export default function JogoScreen() {
   const isDark = theme === 'dark';
   const { width } = useWindowDimensions();
 
-  const [pergunta, setPergunta] = useState(null);
+  const [pergunta, setPergunta] = useState<Pergunta | null>(null);
   const [anoAtual, setAnoAtual] = useState(8);
   const [contadorQuestoes, setContadorQuestoes] = useState(0);
   const [totalPerguntas, setTotalPerguntas] = useState(0);
@@ -117,7 +117,7 @@ if (!response.ok) {
       ano: data.ano,
       dica: data.dica,
       alternativas: alternativasComLetra,
-    });
+    } as Pergunta);
 
     setPerguntasUsadas(prev => new Set(prev).add(data.id));
   } catch (error) {
