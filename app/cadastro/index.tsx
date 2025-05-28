@@ -98,7 +98,7 @@ export default function CadastroScreen() {
         <View style={[styles.inputContainerSenha, { backgroundColor: tema.inputBg }]}>
           <Feather name="lock" size={20} color="#888" style={styles.icon} />
           <TextInput
-            style={[styles.input, { color: tema.texto }]} placeholder="    Senha" placeholderTextColor="#888"
+            style={[styles.input, { color: tema.texto }]} placeholder="Senha" placeholderTextColor="#888"
             value={senha} onChangeText={setSenha} secureTextEntry={!mostrarSenha}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
@@ -109,7 +109,7 @@ export default function CadastroScreen() {
         <View style={[styles.inputContainerSenha, { backgroundColor: tema.inputBg }]}>
           <Feather name="lock" size={20} color="#888" style={styles.icon} />
           <TextInput
-            style={[styles.input, { color: tema.texto }]} placeholder="    Confirme sua senha" placeholderTextColor="#888"
+            style={[styles.input, { color: tema.texto }]} placeholder="Confirme sua senha" placeholderTextColor="#888"
             value={confirmarSenha} onChangeText={setConfirmarSenha} secureTextEntry={!mostrarConfirmar}
           />
           <TouchableOpacity onPress={() => setMostrarConfirmar(!mostrarConfirmar)}>
