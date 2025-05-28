@@ -32,7 +32,7 @@ export default function JogoScreen() {
   const isDark = theme === 'dark';
   const { width } = useWindowDimensions();
 
-  const [pergunta, setPergunta] = useState<Pergunta | null>(null);
+  const [pergunta, setPergunta] = useState(null);
   const [anoAtual, setAnoAtual] = useState(8);
   const [contadorQuestoes, setContadorQuestoes] = useState(0);
   const [totalPerguntas, setTotalPerguntas] = useState(0);
@@ -113,12 +113,12 @@ if (!response.ok) {
     const alternativasComLetra = letras.map((letra, i) => ({ ...alternativasEmbaralhadas[i], letra }));
 
     setPergunta({
-  id: data.id,
-  enunciado: data.enunciado,
-  ano: data.ano,
-  dica: data.dica,
-  alternativas: alternativasComLetra
-} as Pergunta);
+      id: data.id,
+      enunciado: data.enunciado,
+      ano: data.ano,
+      dica: data.dica,
+      alternativas: alternativasComLetra,
+    });
 
     setPerguntasUsadas(prev => new Set(prev).add(data.id));
   } catch (error) {
@@ -129,26 +129,16 @@ if (!response.ok) {
 
   
   const eliminarAlternativas = () => {
-  if (!pergunta) return;
-
-  const alternativasErradas = pergunta.alternativas.filter(a => !a.correta);
-  const remover = alternativasErradas.slice(0, 2).map(a => a.letra);
-
-  setPergunta(prev => {
-    if (!prev) return prev;
-
-    return {
-      id: prev.id,
-      enunciado: prev.enunciado,
-      ano: prev.ano,
-      dica: prev.dica,
+    const alternativasErradas = pergunta.alternativas.filter(a => !a.correta);
+    const remover = alternativasErradas.slice(0, 2).map(a => a.letra);
+    setPergunta(prev => ({
+      ...prev,
       alternativas: prev.alternativas.map(a => ({
         ...a,
         texto: remover.includes(a.letra) ? '---' : a.texto
       }))
-    };
-  });
-};
+    }));
+  };
 
 
 
@@ -175,9 +165,11 @@ const encerrarJogo = () => {
     router.replace({
       pathname: '/fim_de_jogo',
       params: {
+        total: totalPerguntas.toString(),
         dinheiro: dinheiro.toString(),
         respondidas: contadorQuestoes.toString(),
-        },
+        total: totalPerguntas.toString(),
+      },
     });
   };
 
@@ -219,7 +211,8 @@ const verificarResposta = (alternativa: { correta: any; }) => {
     const novaQuantia = Math.max(dinheiro - 100000, 0);
     setDinheiro(novaQuantia);
     const correta = pergunta.alternativas.find((a: { correta: any; }) => a.correta);
-    
+    setRespostaCorreta(correta);
+    setModalErro(true);
   }
 };
 
@@ -233,9 +226,11 @@ const verificarResposta = (alternativa: { correta: any; }) => {
     const valorFinal = Math.floor(dinheiro * 0.5);
     router.replace({
       pathname: '/fim_de_jogo',
-      params: {dinheiro: valorFinal.toString(),
+      params: {
+        total: totalPerguntas.toString(),
+        dinheiro: valorFinal.toString(),
         respondidas: contadorQuestoes.toString(),
-        
+        total: totalPerguntas.toString(),
       },
     });
   };
@@ -306,7 +301,7 @@ return (
           onPress={() => setModalPerguntaVisible(true)}
         >
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
-          {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+          {(pergunta?.alternativas || []).map((alt, index) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -315,7 +310,7 @@ return (
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(0, 2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt, index) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -326,7 +321,7 @@ return (
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).slice(2).map((alt, index) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -407,7 +402,7 @@ return (
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
-            {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).map((alt, index) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
@@ -509,6 +504,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 8,
+    marginBottom: 10,
   },
   valorAtualTexto: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
   respostasGrid: { gap: 20 },
