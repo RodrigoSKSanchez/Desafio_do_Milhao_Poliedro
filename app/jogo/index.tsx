@@ -46,6 +46,7 @@ const [pula, setPula] = useState(0);
 const [elimina, setElimina] = useState(0);
   const [dinheiro, setDinheiro] = useState(0);
   const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
+  const [alternativasDesativadas, setAlternativasDesativadas] = useState<string[]>([]);
   const finalizarJogo = async () => {
     const idAluno = await AsyncStorage.getItem('idAluno');
     try {
@@ -111,6 +112,7 @@ if (!response.ok) {
     const alternativasEmbaralhadas = [...data.alternativas].sort(() => Math.random() - 0.5);
     const alternativasComLetra = letras.map((letra, i) => ({ ...alternativasEmbaralhadas[i], letra }));
 
+    setAlternativasDesativadas([]);
     setPergunta({
       id: data.id,
       enunciado: data.enunciado,
@@ -131,7 +133,12 @@ if (!response.ok) {
     if (!pergunta) return;
 
     const alternativasErradas = pergunta.alternativas.filter((a) => !a.correta);
-    const remover = alternativasErradas.slice(0, 2).map((a) => a.letra);
+    const remover = alternativasErradas
+      .slice(0, 2)
+      .map((a) => a.letra)
+      .filter((letra): letra is string => letra !== undefined);
+
+    setAlternativasDesativadas(remover);
 
     setPergunta(prev => {
       if (!prev) return prev;
@@ -139,11 +146,12 @@ if (!response.ok) {
         ...prev,
         alternativas: prev.alternativas.map(a => ({
           ...a,
-          texto: remover.includes(a.letra) ? '---' : a.texto
+          texto: remover.includes(a.letra ?? '') ? '---' : a.texto
         }))
       };
     });
   };
+
 
 
 
@@ -213,10 +221,8 @@ const verificarResposta = (alternativa: { correta: any; }) => {
   } else {
     if (!pergunta) return;
 
-    const checkpoint = Math.floor(dinheiro / 100000) * 100000;
-    const novaQuantia = Math.max(checkpoint, 0);
+    const novaQuantia = Math.max(dinheiro - 100000, 0);
     setDinheiro(novaQuantia);
-
 
     const correta = pergunta.alternativas.find((a) => a.correta);
     setRespostaCorreta(correta ?? null);
@@ -319,28 +325,62 @@ return (
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
             {(pergunta?.alternativas || []).slice(0, 2).map((alt: Alternativa, index: React.Key) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, {
-                backgroundColor:
-                  alt.letra === 'A' ? 'red' :
-                  alt.letra === 'B' ? 'green' :
-                  alt.letra === 'C' ? 'magenta' :
-                  alt.letra === 'D' ? 'blue' : '#888'
-              }]} onPress={() => verificarResposta(alt)}>
-                <Text style={styles.respostaTexto}>{alt.letra}</Text>
-              </TouchableOpacity>
+              
+<TouchableOpacity
+  key={index}
+  disabled={alternativasDesativadas.includes(alt.letra ?? '')}
+  style={[
+    styles.respostaBotao,
+    {
+      backgroundColor: alternativasDesativadas.includes(alt.letra ?? '')
+        ? '#888'
+        : alt.letra === 'A'
+        ? 'red'
+        : alt.letra === 'B'
+        ? 'green'
+        : alt.letra === 'C'
+        ? 'magenta'
+        : alt.letra === 'D'
+        ? 'blue'
+        : '#888',
+      opacity: alternativasDesativadas.includes(alt.letra ?? '') ? 0.6 : 1,
+    },
+  ]}
+  onPress={() => verificarResposta(alt)}
+>
+  <Text style={styles.respostaTexto}>{alt.letra}</Text>
+</TouchableOpacity>
+
             ))}
           </View>
           <View style={styles.linhaResposta}>
             {(pergunta?.alternativas || []).slice(2).map((alt: Alternativa, index: React.Key) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, {
-                backgroundColor:
-                  alt.letra === 'A' ? 'red' :
-                  alt.letra === 'B' ? 'green' :
-                  alt.letra === 'C' ? 'magenta' :
-                  alt.letra === 'D' ? 'blue' : '#888'
-              }]} onPress={() => verificarResposta(alt)}>
-                <Text style={styles.respostaTexto}>{alt.letra}</Text>
-              </TouchableOpacity>
+              
+<TouchableOpacity
+  key={index}
+  disabled={alternativasDesativadas.includes(alt.letra ?? '')}
+  style={[
+    styles.respostaBotao,
+    {
+      backgroundColor: alternativasDesativadas.includes(alt.letra ?? '')
+        ? '#888'
+        : alt.letra === 'A'
+        ? 'red'
+        : alt.letra === 'B'
+        ? 'green'
+        : alt.letra === 'C'
+        ? 'magenta'
+        : alt.letra === 'D'
+        ? 'blue'
+        : '#888',
+      opacity: alternativasDesativadas.includes(alt.letra ?? '') ? 0.6 : 1,
+    },
+  ]}
+  onPress={() => verificarResposta(alt)}
+>
+  <Text style={styles.respostaTexto}>{alt.letra}</Text>
+</TouchableOpacity>
+
             ))}
           </View>
         </View>
@@ -393,10 +433,10 @@ return (
 
 <View style={styles.premiosContainer}>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
-            <Text style={styles.premioTexto}>Errar{"\n"}Checkpoint{"\n"}R$ {Math.max(Math.floor(dinheiro / 100000) * 100000, 0).toLocaleString('pt-BR')}</Text>
+            <Text style={styles.premioTexto}>Errar{"\n"}-100.000{"\n"}R$ {Math.max(dinheiro - 100000, 0).toLocaleString('pt-BR')}</Text>
           </View>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
-            <Text style={styles.premioTexto}>Parar{"\n"}-50%{"\n"}R$ {(dinheiro * 0.5).toLocaleString('pt-BR')}</Text>
+            <Text style={styles.premioTexto}>Parar{"\n"}+50%{"\n"}R$ {(dinheiro * 0.5).toLocaleString('pt-BR')}</Text>
           </View>
           <View style={[styles.premioBox, { backgroundColor: cores.box }]}>
             <Text style={styles.premioTexto}>Acertar{"\n"}+20.000{"\n"}R$ {(dinheiro + 20000).toLocaleString('pt-BR')}</Text>
