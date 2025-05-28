@@ -57,7 +57,7 @@ pip
 
 pip install mysql-connector-python
 pip install fastapi[standard]
-
+pip install 'uvicorn
 
 Rodar back
 
