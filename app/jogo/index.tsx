@@ -301,7 +301,7 @@ return (
           onPress={() => setModalPerguntaVisible(true)}
         >
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
-          {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+          {(pergunta?.alternativas || []).map((alt, index) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -310,7 +310,7 @@ return (
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(0, 2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt, index) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -321,7 +321,7 @@ return (
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(2).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).slice(2).map((alt, index) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -402,7 +402,7 @@ return (
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
-            {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+            {(pergunta?.alternativas || []).map((alt, index) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
