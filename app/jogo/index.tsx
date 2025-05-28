@@ -128,11 +128,11 @@ if (!response.ok) {
 
   
   const eliminarAlternativas = () => {
-    const alternativasErradas = pergunta.alternativas.filter(a => !a.correta);
-    const remover = alternativasErradas.slice(0, 2).map(a => a.letra);
+    const alternativasErradas = pergunta.alternativas.filter((a: { correta: any; }) => !a.correta);
+    const remover = alternativasErradas.slice(0, 2).map((a: { letra: any; }) => a.letra);
     setPergunta(prev => ({
       ...prev,
-      alternativas: prev.alternativas.map(a => ({
+      alternativas: prev.alternativas.map((a: { letra: any; texto: any; }) => ({
         ...a,
         texto: remover.includes(a.letra) ? '---' : a.texto
       }))
@@ -296,7 +296,7 @@ return (
           onPress={() => setModalPerguntaVisible(true)}
         >
           <Text style={styles.perguntaTexto}>{(pergunta?.enunciado || '') || "(Carregando...)"}</Text>
-          {(pergunta?.alternativas || []).map((alt, index) => (
+          {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
             <Text key={index} style={styles.perguntaAlternativaTexto}>
               {alt.letra}) {alt.texto}
             </Text>
@@ -305,7 +305,7 @@ return (
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(0, 2).map((alt, index) => (
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt: { letra?: any; correta?: any; }, index: React.Key | null | undefined) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -316,7 +316,7 @@ return (
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(2).map((alt, index) => (
+            {(pergunta?.alternativas || []).slice(2).map((alt: { letra?: any; correta?: any; }, index: React.Key | null | undefined) => (
               <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
             alt.letra === 'A' ? 'red' :
             alt.letra === 'B' ? 'green' :
@@ -397,7 +397,7 @@ return (
               <Text style={styles.fecharModalTexto}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTexto}>{(pergunta?.enunciado || '')}</Text>
-            {(pergunta?.alternativas || []).map((alt, index) => (
+            {(pergunta?.alternativas || []).map((alt: { letra: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; texto: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
               <Text key={index} style={{ color: 'white', fontSize: 16, marginVertical: 2 }}>
                 {alt.letra}) {alt.texto}
               </Text>
