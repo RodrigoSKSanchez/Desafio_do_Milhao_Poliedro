@@ -10,27 +10,7 @@ import { useTheme } from '../../context/ThemeContext';
 
 
 import { useRouter } from 'expo-router';
-  const finalizarJogo = async () => {
-    const idAluno = await AsyncStorage.getItem('idAluno'); // substitua com o ID real
-    try {
-      await fetch('http://localhost:8000/registrar_historico', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idAluno,
-          numero_acertos: contadorQuestoes,
-          total_perguntas: 15,
-          dinheiro_ganho: dinheiro
-        })
-      });
-    } catch (error) {
-      console.error("Erro ao registrar histórico:", error);
-    }
-    setModalVitoriaVisible(true);
-  };
-
+  
 export default function JogoScreen() {
   const { theme } = useTheme();
   const router = useRouter();
@@ -51,6 +31,27 @@ const [pula, setPula] = useState(0);
 const [elimina, setElimina] = useState(0);
   const [dinheiro, setDinheiro] = useState(0);
   const [modalVitoriaVisible, setModalVitoriaVisible] = useState(false);
+  const finalizarJogo = async () => {
+    const idAluno = await AsyncStorage.getItem('idAluno');
+    try {
+      await fetch('http://localhost:8000/registrar_historico', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idAluno,
+          numero_acertos: contadorQuestoes,
+          total_perguntas: 15,
+          dinheiro_ganho: dinheiro
+        })
+      });
+    } catch (error) {
+      console.error("Erro ao registrar histórico:", error);
+    }
+    setModalVitoriaVisible(true);
+  };
+
   const [perguntasUsadas, setPerguntasUsadas] = useState(new Set());
   const isDesktop = width > 768;
   const MAX_DINHEIRO = 1000000;
