@@ -242,7 +242,7 @@ const verificarResposta = (alternativa: { correta: any; }) => {
 
   if (!pergunta) {
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000',}}>
       <Text style={{ color: '#fff', fontSize: 18 }}>Carregando pergunta...</Text>
     <Modal
         visible={modalVitoriaVisible}
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { flex: 1, padding: 20, justifyContent: 'space-around', alignItems: 'center' },
   contentDesktop: { paddingHorizontal: 40 },
-  perguntaBox: { width: '90%', borderRadius: 10, padding: 16, maxWidth: 800 },
+  perguntaBox: { width: '90%', borderRadius: 10, padding: 16, maxWidth: 800, marginBottom:10 },
   perguntaTexto: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   perguntaAlternativaTexto: { color: '#fff', fontSize: 12, marginTop: 4 },
   valorAtualContainer: { marginTop: 10 },
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   valorAtualTexto: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
-  respostasGrid: { gap: 20 },
+  respostasGrid: { gap: 10 },
   linhaResposta: { flexDirection: 'row', justifyContent: 'center', gap: 30 },
   respostaBotao: { width: 140, height: 120, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   respostaTexto: { color: '#fff', fontWeight: 'bold', fontSize: 20 },

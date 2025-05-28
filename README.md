@@ -56,8 +56,9 @@ Join our community of developers creating universal apps.
 pip 
 
 pip install mysql-connector-python
+pip install fastapi
 pip install fastapi[standard]
-
+pip install 'uvicorn
 
 Rodar back
 
