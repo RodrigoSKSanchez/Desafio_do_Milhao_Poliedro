@@ -37,7 +37,7 @@ export default function JogoScreen() {
   const [contadorQuestoes, setContadorQuestoes] = useState(0);
   const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [modalErro, setModalErro] = useState(false);
-  const [respostaCorreta, setRespostaCorreta] = useState(null);
+  const [respostaCorreta, setRespostaCorreta] = useState<Alternativa | null>(null);
   const [modalPararVisible, setModalPararVisible] = useState(false);
   const [modalPerguntaVisible, setModalPerguntaVisible] = useState(false);
 const [modalDicaVisible, setModalDicaVisible] = useState(false);
@@ -128,15 +128,21 @@ if (!response.ok) {
 
   
   const eliminarAlternativas = () => {
-    const alternativasErradas = pergunta.alternativas.filter((a: { correta: any; }) => !a.correta);
-    const remover = alternativasErradas.slice(0, 2).map((a: { letra: any; }) => a.letra);
-    setPergunta(prev => ({
-      ...prev,
-      alternativas: prev.alternativas.map((a: { letra: any; texto: any; }) => ({
-        ...a,
-        texto: remover.includes(a.letra) ? '---' : a.texto
-      }))
-    }));
+    if (!pergunta) return;
+
+    const alternativasErradas = pergunta.alternativas.filter((a) => !a.correta);
+    const remover = alternativasErradas.slice(0, 2).map((a) => a.letra);
+
+    setPergunta(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        alternativas: prev.alternativas.map(a => ({
+          ...a,
+          texto: remover.includes(a.letra) ? '---' : a.texto
+        }))
+      };
+    });
   };
 
 
@@ -196,9 +202,8 @@ const verificarResposta = (alternativa: { correta: any; }) => {
     setDinheiro(novoDinheiro);
 
     if (novoDinheiro >= MAX_DINHEIRO && !modalVitoriaVisible) {
-    setModalVitoriaVisible(true);
-    // Não interrompe o fluxo com return
-  }
+      setModalVitoriaVisible(true);
+    }
 
     if (novaContagem % 10 === 0 && anoAtual < 13) {
       setAnoAtual((prev) => prev + 1);
@@ -206,10 +211,13 @@ const verificarResposta = (alternativa: { correta: any; }) => {
       buscarPergunta();
     }
   } else {
+    if (!pergunta) return;
+
     const novaQuantia = Math.max(dinheiro - 100000, 0);
     setDinheiro(novaQuantia);
-    const correta = pergunta.alternativas.find((a: { correta: any; }) => a.correta);
-    setRespostaCorreta(correta);
+
+    const correta = pergunta.alternativas.find((a) => a.correta);
+    setRespostaCorreta(correta ?? null);
     setModalErro(true);
   }
 };
