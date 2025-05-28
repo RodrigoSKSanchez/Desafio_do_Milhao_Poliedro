@@ -34,7 +34,7 @@ export default function HomeScreen(): React.JSX.Element {
           resizeMode="contain"
         />
 
-        <Text style={[styles.title, { color: tema.texto }]}>Show do Milhão</Text>
+        <Text style={[styles.title, { color: tema.texto }]}>Desafio do Milhão</Text>
 
         <TouchableOpacity 
           style={styles.button}

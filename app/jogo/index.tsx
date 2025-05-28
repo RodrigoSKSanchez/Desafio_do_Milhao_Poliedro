@@ -280,18 +280,19 @@ const verificarResposta = (alternativa: { correta: any; }) => {
       
       </Modal>
 
-<Modal visible={modalDicaVisible} transparent animationType="fade">
-        <View style={styles.modalFundo}>
-          <View style={styles.modalContainer}>
+  <Modal visible={modalDicaVisible} transparent animationType="fade">
+    <View style={styles.modalFundo}>
+      <View style={styles.modalContainer}>
+        <Text style={styles.modalTexto}>
+          💡:{"\n"}{(pergunta as unknown as Pergunta)?.dica}
+        </Text>
+        <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
+          <Text style={styles.botaoPararTexto}>Fechar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </Modal>
 
-            <Text style={styles.modalTexto}>💡:{"\n"}{pergunta?.dica}</Text>
-            
-            <TouchableOpacity onPress={() => setModalDicaVisible(false)}>
-              <Text style={styles.botaoPararTexto}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
     </SafeAreaView>
   );
@@ -315,28 +316,33 @@ return (
 
         <View style={styles.respostasGrid}>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(0, 2).map((alt: { letra?: any; correta?: any; }, index: React.Key | null | undefined) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
-            alt.letra === 'A' ? 'red' :
-            alt.letra === 'B' ? 'green' :
-            alt.letra === 'C' ? 'magenta' :
-            alt.letra === 'D' ? 'blue' : '#888' }]} onPress={() => verificarResposta(alt)}>
+            {(pergunta?.alternativas || []).slice(0, 2).map((alt: Alternativa, index: React.Key) => (
+              <TouchableOpacity key={index} style={[styles.respostaBotao, {
+                backgroundColor:
+                  alt.letra === 'A' ? 'red' :
+                  alt.letra === 'B' ? 'green' :
+                  alt.letra === 'C' ? 'magenta' :
+                  alt.letra === 'D' ? 'blue' : '#888'
+              }]} onPress={() => verificarResposta(alt)}>
                 <Text style={styles.respostaTexto}>{alt.letra}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.linhaResposta}>
-            {(pergunta?.alternativas || []).slice(2).map((alt: { letra?: any; correta?: any; }, index: React.Key | null | undefined) => (
-              <TouchableOpacity key={index} style={[styles.respostaBotao, { backgroundColor:
-            alt.letra === 'A' ? 'red' :
-            alt.letra === 'B' ? 'green' :
-            alt.letra === 'C' ? 'magenta' :
-            alt.letra === 'D' ? 'blue' : '#888' }]} onPress={() => verificarResposta(alt)}>
+            {(pergunta?.alternativas || []).slice(2).map((alt: Alternativa, index: React.Key) => (
+              <TouchableOpacity key={index} style={[styles.respostaBotao, {
+                backgroundColor:
+                  alt.letra === 'A' ? 'red' :
+                  alt.letra === 'B' ? 'green' :
+                  alt.letra === 'C' ? 'magenta' :
+                  alt.letra === 'D' ? 'blue' : '#888'
+              }]} onPress={() => verificarResposta(alt)}>
                 <Text style={styles.respostaTexto}>{alt.letra}</Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
+
 
         <View style={styles.valorAtualContainer}>
           <View style={[styles.valorBox, { backgroundColor: cores.box }]}>
