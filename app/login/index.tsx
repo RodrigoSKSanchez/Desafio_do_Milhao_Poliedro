@@ -59,7 +59,7 @@ export default function LoginScreen() {
 
       if (response.ok) {
         const nome = email.split('@')[0];
-        await AsyncStorage.setItem('usuario_aluno', nome);
+        await AsyncStorage.setItem('usuario_aluno', email);
         await AsyncStorage.setItem('idAluno', data.idAluno.toString());
         router.push('/jogo_menu');
       } else {
