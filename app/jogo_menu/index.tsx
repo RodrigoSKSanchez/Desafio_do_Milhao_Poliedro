@@ -21,7 +21,7 @@ export default function JogoScreen() {
   useEffect(() => {
     const carregarNome = async () => {
       const nome = await AsyncStorage.getItem('usuario_aluno');
-      if (nome) setNomeAluno(nome);
+      if (nome) setNomeAluno(nome.split('@')[0]);
     };
     carregarNome();
   }, []);

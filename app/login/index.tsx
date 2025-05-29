@@ -58,7 +58,6 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        const nome = email.split('@')[0];
         await AsyncStorage.setItem('usuario_aluno', email);
         await AsyncStorage.setItem('idAluno', data.idAluno.toString());
         router.push('/jogo_menu');
