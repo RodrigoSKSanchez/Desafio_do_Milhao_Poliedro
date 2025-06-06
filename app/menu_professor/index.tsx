@@ -10,8 +10,8 @@ import {
   Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MenuProfessor(): React.JSX.Element {
   const router = useRouter();
@@ -23,9 +23,8 @@ export default function MenuProfessor(): React.JSX.Element {
     fundo: isDark ? '#000' : '#FAFAFA',
     texto: isDark ? '#fff' : '#000',
     voltar: isDark ? '#555' : '#BDBDBD',
-    iconeBg: isDark ? '#333' : '#FDD3E4',
     perguntas: '#468b98',
-    alunos: '#fde276',
+    alunos: '#E0B85C',
     modalBg: isDark ? '#222' : '#fff',
     modalBtn: isDark ? '#444' : '#eee',
   };
@@ -34,20 +33,22 @@ export default function MenuProfessor(): React.JSX.Element {
     <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.perguntasButton, { backgroundColor: tema.perguntas }]}>
-          <Text style={styles.buttonText}>Perguntas</Text>
-          <Feather name="help-circle" size={24} color="#fff" />
-        </TouchableOpacity>
+      <View style={styles.content}>
+        <View style={styles.innerContent}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: tema.perguntas }]}>
+            <Text style={styles.buttonText}>Perguntas</Text>
+            <Ionicons name="help-circle-outline" size={24} color="#fff" />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.alunosButton, { backgroundColor: tema.alunos }]}>
-          <Text style={styles.buttonText}>Alunos</Text>
-          <Feather name="users" size={24} color="#000" />
-        </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: tema.alunos }]}>
+            <Text style={[styles.buttonText, { color: '#fff' }]}>Alunos</Text>
+            <Ionicons name="people-outline" size={24} color="#fff" />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.voltarButton, { backgroundColor: tema.voltar }]} onPress={() => setModalVisible(true)}>
-          <Text style={styles.voltarText}>VOLTAR</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[styles.voltarButton, { backgroundColor: tema.voltar }]} onPress={() => setModalVisible(true)}>
+            <Text style={styles.voltarText}>VOLTAR</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity style={styles.configButton} onPress={() => router.push('/config_prof')}>
@@ -76,52 +77,42 @@ export default function MenuProfessor(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 30,
+    backgroundColor: '#FAFAFA',
   },
-  buttonContainer: {
-    width: '100%',
-    gap: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  content: {
     flex: 1,
-  },
-  perguntasButton: {
-    width: '100%',
-    borderRadius: 20,
-    paddingVertical: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 30,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  innerContent: {
+    width: '100%',
+    paddingHorizontal: 30,
+    gap: 20,
     maxWidth: 500,
   },
-  alunosButton: {
-    width: '100%',
+  button: {
     borderRadius: 20,
     paddingVertical: 30,
+    paddingHorizontal: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 30,
     alignItems: 'center',
-    maxWidth: 500,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
   },
   voltarButton: {
-    width: '100%',
     borderRadius: 20,
     paddingVertical: 15,
     alignItems: 'center',
-    maxWidth: 500,
-    marginTop: 30,
+    marginTop: 20,
+    backgroundColor: '#C0C0C0',
   },
   voltarText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
   },
   configButton: {
     position: 'absolute',
