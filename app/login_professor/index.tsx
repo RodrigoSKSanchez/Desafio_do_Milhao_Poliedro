@@ -60,7 +60,7 @@ export default function LoginScreen() {
       if (response.ok) {
         await AsyncStorage.setItem('usuario_professor', usuario);
         
-        router.push('/jogo_menu');
+        router.push('/menu_professor');
       } else {
         mostrarAlerta(data.detail || 'Credenciais inválidas');
       }
