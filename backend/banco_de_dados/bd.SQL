@@ -22,6 +22,12 @@ CREATE TABLE Professor (
   PRIMARY KEY (idProfessor))
 ENGINE = InnoDB;
 
+INSERT INTO professor (usuario_professor, senha_professor)
+VALUES ('adm', 'adm');
+
+
+
+
 DROP TABLE IF EXISTS Pergunta CASCADE ;
 CREATE TABLE Pergunta (
   idPergunta INT NOT NULL AUTO_INCREMENT,

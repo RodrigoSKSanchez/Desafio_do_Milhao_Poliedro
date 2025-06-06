@@ -232,3 +232,26 @@ def usar_powerup(cursor, dados: UsoPowerup):
 def rota_usar_powerup(dados: UsoPowerup):
     usar_powerup(dados)
     return {"mensagem": f"{dados.tipo} usado com sucesso"}
+
+class ProfessorLogin(BaseModel):
+    usuario_professor: str
+    senha_professor: str
+
+@Conexao.consultar
+def verificar_login_professor(cursor, professor: ProfessorLogin):
+    cursor.execute(
+        "SELECT * FROM Professor WHERE usuario_professor = %s AND senha_professor = %s",
+        (professor.usuario_professor, professor.senha_professor)
+    )
+    return cursor.fetchone()
+
+@app.post("/login_professor")
+def login_professor(professor: ProfessorLogin):
+    try:
+        resultado = verificar_login_professor(professor)
+        if resultado:
+            return {"mensagem": "Login do professor bem-sucedido", "usuario": professor.usuario_professor}
+        else:
+            raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")

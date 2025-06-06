@@ -20,6 +20,10 @@ export default function HomeScreen(): React.JSX.Element {
     router.push('/login');
   };
 
+  const handleLoginProfessorPress = () => {
+    router.push('/login_professor');
+  };
+
   const handleCadastroPress = (): void => {
     router.push('/cadastro');
   };
@@ -41,6 +45,13 @@ export default function HomeScreen(): React.JSX.Element {
           onPress={handleLoginPress}
         >
           <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={handleLoginProfessorPress}
+        >
+          <Text style={styles.buttonText}>Login Professor</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
