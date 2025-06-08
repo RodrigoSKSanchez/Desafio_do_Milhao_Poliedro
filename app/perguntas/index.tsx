@@ -1,5 +1,4 @@
-// app/config_prof/index.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,9 +6,25 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
+  FlatList,
+  TextInput,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
+
+type Pergunta = {
+  idPergunta: number;
+  texto_enunciado: string;
+  ano: number;
+  dica: string;
+  alternativa_A: string;
+  alternativa_B: string;
+  alternativa_C: string;
+  alternativa_CORRETA: string;
+};
 
 export default function ConfigProfScreen() {
   const router = useRouter();
@@ -19,53 +34,146 @@ export default function ConfigProfScreen() {
   const tema = {
     fundo: isDark ? '#000' : '#F7F7F7',
     texto: isDark ? '#fff' : '#000',
+    cards: isDark ? '#2E2E54' : '#4C5C99',
+    voltarBg: isDark ? '#444' : '#DDD',
+    botao: isDark ? '#4CAF50' : '#2E8B57',
+    apagar: '#B22222',
+  };
+
+  const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
+  const [filtroTexto, setFiltroTexto] = useState('');
+  const [filtroAno, setFiltroAno] = useState<number | null>(null);
+  const [modalCriar, setModalCriar] = useState(false);
+
+  const [novaPergunta, setNovaPergunta] = useState({
+    texto_enunciado: '',
+    dica: '',
+    ano: 8,
+    alternativa_A: '',
+    alternativa_B: '',
+    alternativa_C: '',
+    alternativa_CORRETA: '',
+  });
+
+  useEffect(() => {
+    // TODO: carregar perguntas do backend
+  }, []);
+
+  const perguntasFiltradas = perguntas.filter((p) =>
+    p.texto_enunciado.toLowerCase().includes(filtroTexto.toLowerCase()) &&
+    (filtroAno === null || p.ano === filtroAno)
+  );
+
+  const handleCriarPergunta = () => {
+    // TODO: chamada ao backend para salvar nova pergunta
+    setModalCriar(false);
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
-      <StatusBar
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={tema.fundo}
-      />
-      <View style={styles.content}>
-        <Text style={[styles.title, { color: tema.texto }]}>
-          Tela de Perguntas do Professor
-        </Text>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
 
-        <TouchableOpacity
-          style={styles.botaoVoltar}
-          onPress={() => router.push('/menu_professor')}
-        >
-          <Text style={styles.voltarTexto}>← Voltar</Text>
+      <View style={[styles.topBar, { backgroundColor: tema.cards }]}>
+        <TouchableOpacity onPress={() => router.push('/menu_professor')} style={[styles.botaoVoltar, { backgroundColor: tema.voltarBg }]}>
+          <Ionicons name="arrow-back" size={24} color={tema.texto} />
+        </TouchableOpacity>
+        <Text style={[styles.titulo, { color: tema.texto }]}>Perguntas</Text>
+        <TouchableOpacity onPress={() => setModalCriar(true)}>
+          <Ionicons name="add" size={30} color="green" />
         </TouchableOpacity>
       </View>
+
+      <View style={styles.filtros}>
+        <TextInput
+          placeholder="Buscar título..."
+          placeholderTextColor="#999"
+          style={[styles.input, { color: tema.texto, borderColor: tema.texto }]}
+          value={filtroTexto}
+          onChangeText={setFiltroTexto}
+        />
+        <TouchableOpacity onPress={() => setFiltroAno(filtroAno === null ? 8 : filtroAno < 12 ? filtroAno + 1 : null)}>
+          <Ionicons name="filter" size={24} color={tema.texto} />
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={perguntasFiltradas}
+        keyExtractor={(item) => item.idPergunta.toString()}
+        contentContainerStyle={styles.lista}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={[styles.card, { backgroundColor: tema.cards }]}>
+            <Text style={[styles.cardTitulo, { color: tema.texto }]}>{item.texto_enunciado}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      <Modal visible={modalCriar} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <ScrollView>
+              <Text style={styles.modalTitulo}>Nova Pergunta</Text>
+              <TextInput placeholder="Enunciado" style={styles.modalInput} value={novaPergunta.texto_enunciado} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, texto_enunciado: t })} />
+              <TextInput placeholder="Dica" style={styles.modalInput} value={novaPergunta.dica} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, dica: t })} />
+              <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Ano:</Text>
+              <View style={styles.anoContainer}>
+                {[8, 9, 10, 11, 12].map((a) => (
+                  <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: novaPergunta.ano === a ? '#4CAF50' : '#ccc' }]} onPress={() => setNovaPergunta({ ...novaPergunta, ano: a })}>
+                    <Text style={styles.anoTexto}>{a}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput placeholder="Alternativa A" style={styles.modalInput} value={novaPergunta.alternativa_A} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_A: t })} />
+              <TextInput placeholder="Alternativa B" style={styles.modalInput} value={novaPergunta.alternativa_B} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_B: t })} />
+              <TextInput placeholder="Alternativa C" style={styles.modalInput} value={novaPergunta.alternativa_C} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_C: t })} />
+              <TextInput placeholder="Alternativa Correta" style={styles.modalInput} value={novaPergunta.alternativa_CORRETA} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_CORRETA: t })} />
+              <View style={styles.modalBotoes}>
+                <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
+                  <Text style={styles.modalBotaoTexto}>Salvar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalCriar(false)} style={styles.modalCancelar}>
+                  <Text style={styles.modalBotaoTexto}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1, maxWidth: 1000, alignSelf: 'center', width: '100%' },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, paddingHorizontal: 20 },
+  botaoVoltar: { padding: 6, borderRadius: 12 },
+  titulo: { fontSize: 20, fontWeight: 'bold' },
+  filtros: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginVertical: 10 },
+  input: { flex: 1, borderBottomWidth: 1, fontSize: 16, paddingVertical: 4 },
+  lista: { paddingHorizontal: 20, paddingBottom: 20 },
+  card: { padding: 12, borderRadius: 12, marginBottom: 10 },
+  cardTitulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 6 },
+  modalContainer: { flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+  modalBox: {
+    backgroundColor: '#FFF',
+    padding: 30,
+    borderRadius: 10,
+    width: '100%',
+    maxWidth: 700,
+    alignSelf: 'center',
+    maxHeight: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 40,
-  },
-  botaoVoltar: {
-    backgroundColor: '#2E2E54',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 20,
-  },
-  voltarTexto: {
-    color: '#fff',
-    fontSize: 16,
-  },
+  modalTitulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  modalInput: { borderBottomWidth: 1, marginBottom: 12, fontSize: 16 },
+  anoContainer: { flexDirection: 'row', marginVertical: 10, gap: 25 },
+  anoBotao: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, minWidth: 40, alignItems: 'center' },
+  anoTexto: { color: '#000', fontWeight: 'bold' },
+  modalBotoes: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  modalConfirmar: { backgroundColor: '#4CAF50', padding: 10, borderRadius: 8 },
+  modalCancelar: { backgroundColor: '#888', padding: 10, borderRadius: 8 },
+  modalBotaoTexto: { color: '#FFF', fontWeight: 'bold' },
 });
