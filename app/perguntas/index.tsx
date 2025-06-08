@@ -122,6 +122,28 @@ export default function ConfigProfScreen() {
         )}
       />
 
+      {/* Modal Filtro */}
+      <Modal visible={modalFiltro} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <TouchableOpacity onPress={() => setModalFiltro(false)} style={styles.modalFechar}>
+              <Text style={{ color: '#f00', fontWeight: 'bold', fontSize: 18 }}>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitulo}>Filtrar por Ano</Text>
+            <View style={styles.anoContainer}>
+              {[8, 9, 10, 11, 12].map((a) => (
+                <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: filtroAno === a ? '#4CAF50' : '#ccc' }]} onPress={() => { setFiltroAno(a); setModalFiltro(false); }}>
+                  <Text style={styles.anoTexto}>{a}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity style={[styles.anoBotao, { backgroundColor: filtroAno === null ? '#4CAF50' : '#ccc' }]} onPress={() => { setFiltroAno(null); setModalFiltro(false); }}>
+                <Text style={styles.anoTexto}>Todos</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Modal Criar */}
       <Modal visible={modalCriar} animationType="slide" transparent>
         <View style={styles.modalContainer}>
@@ -160,8 +182,35 @@ export default function ConfigProfScreen() {
         </View>
       </Modal>
 
-      {/* Modal Filtro e Visualização permanecem os mesmos */}
-      {/* ... */}
+      {/* Modal Visualização */}
+      {modalDetalhes && (
+        <Modal visible transparent animationType="fade">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalBox}>
+              <ScrollView>
+                <Text style={styles.modalTitulo}>Detalhes da Pergunta</Text>
+                <Text style={styles.modalLabel}>Enunciado:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.texto_enunciado}</Text>
+                <Text style={styles.modalLabel}>Dica:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.dica}</Text>
+                <Text style={styles.modalLabel}>Ano:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.ano}</Text>
+                <Text style={styles.modalLabel}>Alternativa A:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.alternativa_A}</Text>
+                <Text style={styles.modalLabel}>Alternativa B:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.alternativa_B}</Text>
+                <Text style={styles.modalLabel}>Alternativa C:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.alternativa_C}</Text>
+                <Text style={styles.modalLabel}>Alternativa Correta:</Text>
+                <Text style={styles.modalValor}>{modalDetalhes.alternativa_CORRETA}</Text>
+                <TouchableOpacity onPress={() => setModalDetalhes(null)} style={[styles.modalCancelar, { marginTop: 20 }]}>
+                  <Text style={styles.modalBotaoTexto}>Fechar</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 }
