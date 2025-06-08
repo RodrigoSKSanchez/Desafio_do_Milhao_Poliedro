@@ -79,7 +79,7 @@ export default function ConfigProfScreen() {
         </TouchableOpacity>
         <Text style={[styles.titulo, { color: tema.texto }]}>Perguntas</Text>
         <TouchableOpacity onPress={() => setModalCriar(true)}>
-          <Ionicons name="add" size={30} color="green" />
+          <Ionicons name="add" size={45} color="#47E332" />
         </TouchableOpacity>
       </View>
 
@@ -143,12 +143,12 @@ export default function ConfigProfScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, maxWidth: 1000, alignSelf: 'center', width: '100%' },
-  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, paddingHorizontal: 20 },
+  container: { flex: 1, alignSelf: 'center', width: '100%' },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 25, paddingHorizontal: 20 },
   botaoVoltar: { padding: 6, borderRadius: 12 },
   titulo: { fontSize: 20, fontWeight: 'bold' },
   filtros: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginVertical: 10 },
-  input: { flex: 1, borderBottomWidth: 1, fontSize: 16, paddingVertical: 4 },
+  input: { flex: 1, borderBottomWidth: 1, fontSize: 16, paddingVertical: 4},
   lista: { paddingHorizontal: 20, paddingBottom: 20 },
   card: { padding: 12, borderRadius: 12, marginBottom: 10 },
   cardTitulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 6 },
