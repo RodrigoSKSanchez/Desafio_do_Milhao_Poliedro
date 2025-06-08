@@ -61,3 +61,6 @@ class Perguntas:
     @Conexao.consultar
     def deletar_pergunta(cursor, idPergunta: int):
         cursor.execute("DELETE FROM Pergunta WHERE idPergunta = %s", (idPergunta,))
+        return cursor.rowcount > 0  # True se algo foi deletado, False se não
+
+
