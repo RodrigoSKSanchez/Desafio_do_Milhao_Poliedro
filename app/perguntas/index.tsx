@@ -163,9 +163,6 @@ export default function ConfigProfScreen() {
                 <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
                   <Text style={styles.modalBotaoTexto}>Salvar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setModalCriar(false)} style={styles.modalCancelar}>
-                  <Text style={styles.modalBotaoTexto}>Cancelar</Text>
-                </TouchableOpacity>
               </View>
             </ScrollView>
           </View>
