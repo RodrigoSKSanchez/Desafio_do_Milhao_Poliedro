@@ -44,6 +44,7 @@ export default function ConfigProfScreen() {
   const [filtroTexto, setFiltroTexto] = useState('');
   const [filtroAno, setFiltroAno] = useState<number | null>(null);
   const [modalCriar, setModalCriar] = useState(false);
+  const [modalFiltro, setModalFiltro] = useState(false);
 
   const [novaPergunta, setNovaPergunta] = useState({
     texto_enunciado: '',
@@ -56,7 +57,10 @@ export default function ConfigProfScreen() {
   });
 
   useEffect(() => {
-    // TODO: carregar perguntas do backend
+    fetch("http://127.0.0.1:8000/perguntas")
+      .then((res) => res.json())
+      .then((data) => setPerguntas(data))
+      .catch((err) => console.error("Erro ao carregar perguntas:", err));
   }, []);
 
   const perguntasFiltradas = perguntas.filter((p) =>
@@ -65,7 +69,6 @@ export default function ConfigProfScreen() {
   );
 
   const handleCriarPergunta = () => {
-    // TODO: chamada ao backend para salvar nova pergunta
     setModalCriar(false);
   };
 
@@ -91,7 +94,7 @@ export default function ConfigProfScreen() {
           value={filtroTexto}
           onChangeText={setFiltroTexto}
         />
-        <TouchableOpacity onPress={() => setFiltroAno(filtroAno === null ? 8 : filtroAno < 12 ? filtroAno + 1 : null)}>
+        <TouchableOpacity onPress={() => setModalFiltro(true)}>
           <Ionicons name="filter" size={24} color={tema.texto} />
         </TouchableOpacity>
       </View>
@@ -102,11 +105,33 @@ export default function ConfigProfScreen() {
         contentContainerStyle={styles.lista}
         renderItem={({ item }) => (
           <TouchableOpacity style={[styles.card, { backgroundColor: tema.cards }]}>
-            <Text style={[styles.cardTitulo, { color: tema.texto }]}>{item.texto_enunciado}</Text>
+            <Text style={[styles.cardTitulo, { color: tema.texto }]}>
+              ({item.idPergunta}) {item.texto_enunciado}
+            </Text>
           </TouchableOpacity>
         )}
       />
 
+      {/* Modal Filtro */}
+      <Modal visible={modalFiltro} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitulo}>Filtrar por Ano</Text>
+            <View style={styles.anoContainer}>
+              {[8, 9, 10, 11, 12].map((a) => (
+                <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: filtroAno === a ? '#4CAF50' : '#ccc' }]} onPress={() => { setFiltroAno(a); setModalFiltro(false); }}>
+                  <Text style={styles.anoTexto}>{a}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity style={[styles.anoBotao, { backgroundColor: filtroAno === null ? '#4CAF50' : '#ccc' }]} onPress={() => { setFiltroAno(null); setModalFiltro(false); }}>
+                <Text style={styles.anoTexto}>Todos</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Criar */}
       <Modal visible={modalCriar} animationType="slide" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.modalBox}>
@@ -147,9 +172,9 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 25, paddingHorizontal: 20 },
   botaoVoltar: { padding: 6, borderRadius: 12 },
   titulo: { fontSize: 20, fontWeight: 'bold' },
-  filtros: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginVertical: 10 },
+  filtros: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 60, marginVertical: 10 },
   input: { flex: 1, borderBottomWidth: 1, fontSize: 16, paddingVertical: 4},
-  lista: { paddingHorizontal: 20, paddingBottom: 20 },
+  lista: { paddingHorizontal: 60, paddingBottom: 20 },
   card: { padding: 12, borderRadius: 12, marginBottom: 10 },
   cardTitulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 6 },
   modalContainer: { flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
@@ -169,8 +194,8 @@ const styles = StyleSheet.create({
   },
   modalTitulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   modalInput: { borderBottomWidth: 1, marginBottom: 12, fontSize: 16 },
-  anoContainer: { flexDirection: 'row', marginVertical: 10, gap: 25 },
-  anoBotao: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, minWidth: 40, alignItems: 'center' },
+  anoContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginVertical: 10, gap: 10 },
+  anoBotao: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, minWidth: 50, alignItems: 'center' },
   anoTexto: { color: '#000', fontWeight: 'bold' },
   modalBotoes: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
   modalConfirmar: { backgroundColor: '#4CAF50', padding: 10, borderRadius: 8 },

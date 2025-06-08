@@ -44,3 +44,14 @@ class Perguntas:
             "dica": pergunta["dica"],
             "alternativas": alternativas
         }
+
+
+    @staticmethod
+    @Conexao.consultar
+    def buscar_todas_perguntas(cursor):
+        cursor.execute("""
+            SELECT idPergunta, texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA
+            FROM Pergunta
+            ORDER BY idPergunta DESC
+        """)
+        return cursor.fetchall()

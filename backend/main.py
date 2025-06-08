@@ -255,3 +255,10 @@ def login_professor(professor: ProfessorLogin):
             raise HTTPException(status_code=401, detail="Credenciais inválidas")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
+
+@app.get("/perguntas")
+def listar_perguntas():
+    try:
+        return Perguntas.buscar_todas_perguntas()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
