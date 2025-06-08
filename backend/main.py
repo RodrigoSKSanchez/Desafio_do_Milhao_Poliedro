@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Request, HTTPException, Query
 from pydantic import BaseModel
 from banco_de_dados.bd import Conexao
 from fastapi.middleware.cors import CORSMiddleware
@@ -271,3 +271,22 @@ def deletar_pergunta(idPergunta: int):
         return {"mensagem": "Pergunta deletada com sucesso"}
     else:
         raise HTTPException(status_code=404, detail="Pergunta não encontrada")
+
+
+@app.post("/perguntas")
+def criar_pergunta(pergunta: dict):
+    try:
+        Perguntas.criar_pergunta(
+            pergunta["texto_enunciado"],
+            pergunta["ano"],
+            pergunta["dica"],
+            pergunta["alternativa_A"],
+            pergunta["alternativa_B"],
+            pergunta["alternativa_C"],
+            pergunta["alternativa_CORRETA"]
+        )
+        return {"mensagem": "Pergunta criada com sucesso"}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Erro ao criar pergunta")

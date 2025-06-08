@@ -61,6 +61,16 @@ class Perguntas:
     @Conexao.consultar
     def deletar_pergunta(cursor, idPergunta: int):
         cursor.execute("DELETE FROM Pergunta WHERE idPergunta = %s", (idPergunta,))
-        return cursor.rowcount > 0 
 
 
+    @staticmethod
+    @Conexao.consultar
+    def criar_pergunta(cursor, texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA):
+        if not all([texto_enunciado, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA]):
+            raise ValueError("Todos os campos devem ser preenchidos.")
+        if not (8 <= ano <= 12):
+            raise ValueError("Ano deve estar entre 8 e 12.")
+        cursor.execute("""
+            INSERT INTO Pergunta (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (texto_enunciado, ano, dica, alternativa_A, alternativa_B, alternativa_C, alternativa_CORRETA))

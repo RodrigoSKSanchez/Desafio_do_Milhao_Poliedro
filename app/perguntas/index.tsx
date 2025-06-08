@@ -90,24 +90,56 @@ export default function ConfigProfScreen() {
       .catch((err) => console.error("Erro ao carregar perguntas:", err));
   }, []);
 
-  const perguntasFiltradas = perguntas.filter((p) =>
-    p.texto_enunciado.toLowerCase().includes(filtroTexto.toLowerCase()) &&
-    (filtroAno === null || p.ano === filtroAno)
+  const perguntasFiltradas = perguntas.filter(
+    (p) =>
+      p?.texto_enunciado?.toLowerCase().includes(filtroTexto.toLowerCase?.() || '') &&
+      (filtroAno === null || p.ano === filtroAno)
   );
 
-  const handleCriarPergunta = () => {
-    const campos = novaPergunta;
-    const camposVazios = !campos.texto_enunciado || !campos.dica || !campos.alternativa_A || !campos.alternativa_B || !campos.alternativa_C || !campos.alternativa_CORRETA;
 
-    if (camposVazios) {
+const handleCriarPergunta = async () => {
+  const campos = novaPergunta;
+  const camposVazios = !campos.texto_enunciado || !campos.dica || !campos.alternativa_A || !campos.alternativa_B || !campos.alternativa_C || !campos.alternativa_CORRETA;
+
+  if (camposVazios) {
+    setErroCampos(true);
+    return;
+  }
+
+  setErroCampos(false);
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/perguntas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(novaPergunta),
+    });
+
+    if (response.ok) {
+      const nova = await response.json();
+      setPerguntas((prev) => [...prev, nova]);
+      setNovaPergunta({
+        texto_enunciado: '',
+        dica: '',
+        ano: 8,
+        alternativa_A: '',
+        alternativa_B: '',
+        alternativa_C: '',
+        alternativa_CORRETA: '',
+      });
+      setModalCriar(false);
+    } else {
+      const erro = await response.json();
+      console.warn("Erro ao salvar:", erro.detail);
       setErroCampos(true);
-      return;
     }
-
-    setErroCampos(false);
-    console.log("Criar pergunta:", novaPergunta);
-    setModalCriar(false);
-  };
+  } catch (err) {
+    console.error("Erro na requisição:", err);
+    setErroCampos(true);
+  }
+};
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
