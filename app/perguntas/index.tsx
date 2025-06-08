@@ -47,6 +47,9 @@ export default function ConfigProfScreen() {
   const [modalFiltro, setModalFiltro] = useState(false);
   const [modalDetalhes, setModalDetalhes] = useState<Pergunta | null>(null);
   const [erroCampos, setErroCampos] = useState(false);
+  const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false);
+  const [perguntaParaExcluir, setPerguntaParaExcluir] = useState<Pergunta | null>(null);
+
 
   const [novaPergunta, setNovaPergunta] = useState({
     texto_enunciado: '',
@@ -57,6 +60,28 @@ export default function ConfigProfScreen() {
     alternativa_C: '',
     alternativa_CORRETA: '',
   });
+
+  
+  const confirmarExclusao = (pergunta: Pergunta) => {
+    setPerguntaParaExcluir(pergunta);
+    setModalConfirmarExclusao(true);
+  };
+
+  const excluirPergunta = async () => {
+    if (!perguntaParaExcluir) return;
+    try {
+      await fetch(`http://127.0.0.1:8000/perguntas/${perguntaParaExcluir.idPergunta}`, {
+        method: 'DELETE'
+      });
+      setModalConfirmarExclusao(false);
+      setPerguntaParaExcluir(null);
+      fetch("http://127.0.0.1:8000/perguntas")
+        .then((res) => res.json())
+        .then((data) => setPerguntas(data));
+    } catch (err) {
+      console.error('Erro ao excluir pergunta:', err);
+    }
+  };
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/perguntas")
@@ -118,6 +143,9 @@ export default function ConfigProfScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => setModalDetalhes(item)} style={[styles.card, { backgroundColor: tema.cards }]}>
             <Text style={[styles.cardTitulo, { color: tema.texto }]}>{item.texto_enunciado}</Text>
+            <TouchableOpacity onPress={() => confirmarExclusao(item)} style={{ position: "absolute", top: 6, right: 10 }}>
+              <Text style={{ color: '#E60B00', fontSize: 22, fontWeight: 'bold' }}>X</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
       />
@@ -172,7 +200,7 @@ export default function ConfigProfScreen() {
                 <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>Preencha todos os campos.</Text>
               )}
 
-              <View style={styles.modalBotoes}>
+              <View>
                 <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
                   <Text style={styles.modalBotaoTexto}>Salvar</Text>
                 </TouchableOpacity>
@@ -211,6 +239,23 @@ export default function ConfigProfScreen() {
           </View>
         </Modal>
       )}
+    
+      <Modal visible={modalConfirmarExclusao} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitulo}>Você tem certeza que deseja deletar essa pergunta?</Text>
+            <View>
+              <TouchableOpacity onPress={excluirPergunta} style={{ backgroundColor: '#E60B00', padding: 12, borderRadius: 8, alignItems: 'center', marginBottom: 10 }}>
+                <Text style={styles.modalBotaoTexto}>Confirmar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalConfirmarExclusao(false)} style={{ backgroundColor: '#CCC', padding: 10, borderRadius: 8, alignItems: 'center' }}>
+                <Text style={styles.modalBotaoTexto}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
