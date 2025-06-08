@@ -262,3 +262,12 @@ def listar_perguntas():
         return Perguntas.buscar_todas_perguntas()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/perguntas/{idPergunta}")
+def deletar_pergunta(idPergunta: int):
+    sucesso = Perguntas.deletar_pergunta(idPergunta)
+    if sucesso:
+        return {"mensagem": "Pergunta deletada com sucesso"}
+    else:
+        raise HTTPException(status_code=404, detail="Pergunta não encontrada")

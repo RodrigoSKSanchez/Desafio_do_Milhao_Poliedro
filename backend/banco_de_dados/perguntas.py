@@ -55,3 +55,9 @@ class Perguntas:
             ORDER BY idPergunta DESC
         """)
         return cursor.fetchall()
+
+
+    @staticmethod
+    @Conexao.consultar
+    def deletar_pergunta(cursor, idPergunta: int):
+        cursor.execute("DELETE FROM Pergunta WHERE idPergunta = %s", (idPergunta,))
