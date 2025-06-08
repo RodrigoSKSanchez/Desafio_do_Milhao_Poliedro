@@ -83,12 +83,16 @@ export default function ConfigProfScreen() {
     }
   };
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/perguntas")
+    useEffect(() => {
+    carregarPerguntas();
+  }, []);
+
+  const carregarPerguntas = () => {
+  fetch("http://127.0.0.1:8000/perguntas")
       .then((res) => res.json())
       .then((data) => setPerguntas(data))
       .catch((err) => console.error("Erro ao carregar perguntas:", err));
-  }, []);
+  };
 
   const perguntasFiltradas = perguntas.filter(
     (p) =>
@@ -119,7 +123,7 @@ const handleCriarPergunta = async () => {
 
     if (response.ok) {
       const nova = await response.json();
-      setPerguntas((prev) => [...prev, nova]);
+      carregarPerguntas();
       setNovaPergunta({
         texto_enunciado: '',
         dica: '',
@@ -163,6 +167,9 @@ const handleCriarPergunta = async () => {
           value={filtroTexto}
           onChangeText={setFiltroTexto}
         />
+        <TouchableOpacity onPress={carregarPerguntas}>
+          <Ionicons name="reload" size={35} color={tema.texto} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalFiltro(true)}>
           <Ionicons name="filter" size={35} color={tema.texto} />
         </TouchableOpacity>
