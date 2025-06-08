@@ -35,12 +35,12 @@ export default function MenuProfessor(): React.JSX.Element {
 
       <View style={styles.content}>
         <View style={styles.innerContent}>
-          <TouchableOpacity style={[styles.button, { backgroundColor: tema.perguntas }]}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: tema.perguntas }]} onPress={() => router.push('/perguntas')}>
             <Text style={styles.buttonText}>Perguntas</Text>
             <Ionicons name="help-circle-outline" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, { backgroundColor: tema.alunos }]}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: tema.alunos }]} onPress={() => router.push('/')}>
             <Text style={[styles.buttonText, { color: '#fff' }]}>Alunos</Text>
             <Ionicons name="people-outline" size={24} color="#fff" />
           </TouchableOpacity>
