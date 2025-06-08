@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -69,6 +70,12 @@ export default function ConfigProfScreen() {
     (filtroAno === null || p.ano === filtroAno)
   );
 
+  const handleCriarPergunta = () => {
+    // Função de exemplo, você pode substituir por POST real
+    console.log("Criar pergunta:", novaPergunta);
+    setModalCriar(false);
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={tema.fundo} />
@@ -107,10 +114,13 @@ export default function ConfigProfScreen() {
         )}
       />
 
-      {/* Modal de filtro */}
+      {/* Modal Filtro */}
       <Modal visible={modalFiltro} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalBox}>
+            <TouchableOpacity onPress={() => setModalFiltro(false)} style={styles.modalFechar}>
+              <Text style={{ color: '#f00', fontWeight: 'bold', fontSize: 18 }}>X</Text>
+            </TouchableOpacity>
             <Text style={styles.modalTitulo}>Filtrar por Ano</Text>
             <View style={styles.anoContainer}>
               {[8, 9, 10, 11, 12].map((a) => (
@@ -126,7 +136,43 @@ export default function ConfigProfScreen() {
         </View>
       </Modal>
 
-      {/* Modal de visualização */}
+      {/* Modal Criar */}
+      <Modal visible={modalCriar} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <TouchableOpacity onPress={() => setModalCriar(false)} style={styles.modalFechar}>
+              <Text style={{ color: '#f00', fontWeight: 'bold', fontSize: 18 }}>X</Text>
+            </TouchableOpacity>
+            <ScrollView>
+              <Text style={styles.modalTitulo}>Nova Pergunta</Text>
+              <TextInput placeholder="Enunciado" style={styles.modalInput} value={novaPergunta.texto_enunciado} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, texto_enunciado: t })} />
+              <TextInput placeholder="Dica" style={styles.modalInput} value={novaPergunta.dica} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, dica: t })} />
+              <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Ano:</Text>
+              <View style={styles.anoContainer}>
+                {[8, 9, 10, 11, 12].map((a) => (
+                  <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: novaPergunta.ano === a ? '#4CAF50' : '#ccc' }]} onPress={() => setNovaPergunta({ ...novaPergunta, ano: a })}>
+                    <Text style={styles.anoTexto}>{a}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput placeholder="Alternativa A" style={styles.modalInput} value={novaPergunta.alternativa_A} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_A: t })} />
+              <TextInput placeholder="Alternativa B" style={styles.modalInput} value={novaPergunta.alternativa_B} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_B: t })} />
+              <TextInput placeholder="Alternativa C" style={styles.modalInput} value={novaPergunta.alternativa_C} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_C: t })} />
+              <TextInput placeholder="Alternativa Correta" style={styles.modalInput} value={novaPergunta.alternativa_CORRETA} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_CORRETA: t })} />
+              <View style={styles.modalBotoes}>
+                <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
+                  <Text style={styles.modalBotaoTexto}>Salvar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalCriar(false)} style={styles.modalCancelar}>
+                  <Text style={styles.modalBotaoTexto}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Visualização */}
       {modalDetalhes && (
         <Modal visible transparent animationType="fade">
           <View style={styles.modalContainer}>
@@ -170,15 +216,7 @@ const styles = StyleSheet.create({
   card: { padding: 10, borderRadius: 12, marginBottom: 12 },
   cardTitulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 6 },
   modalContainer: { flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
-  modalBox: {
-    backgroundColor: '#FFF',
-    padding: 30,
-    borderRadius: 10,
-    width: '100%',
-    maxWidth: 700,
-    alignSelf: 'center',
-    maxHeight: '90%',
-  },
+  modalBox: { backgroundColor: '#FFF', padding: 30, borderRadius: 10, width: '100%', maxWidth: 700, alignSelf: 'center', maxHeight: '90%' },
   modalTitulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   modalInput: { borderBottomWidth: 1, marginBottom: 12, fontSize: 16 },
   anoContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginVertical: 10, gap: 10 },
@@ -187,5 +225,8 @@ const styles = StyleSheet.create({
   modalLabel: { fontWeight: 'bold', marginTop: 10 },
   modalValor: { marginBottom: 10 },
   modalCancelar: { backgroundColor: '#888', padding: 10, borderRadius: 8, alignItems: 'center' },
+  modalConfirmar: { backgroundColor: '#4CAF50', padding: 10, borderRadius: 8, alignItems: 'center', flex: 1 },
+  modalBotoes: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, gap: 10 },
   modalBotaoTexto: { color: '#FFF', fontWeight: 'bold' },
+  modalFechar: { position: 'absolute', right: 12, top: 10, zIndex: 10 },
 })
