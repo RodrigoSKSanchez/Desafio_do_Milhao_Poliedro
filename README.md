@@ -69,3 +69,9 @@ LEMBRAR DE ADICIONAR O _login_banco_de_dados
 
 usuario = ""
 senha = ""
+
+
+lembrando, pro professor rodar
+
+INSERT INTO professor (usuario_professor, senha_professor)
+VALUES ('adm', 'adm'); // senha e usuario
