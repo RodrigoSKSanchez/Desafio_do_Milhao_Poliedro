@@ -47,6 +47,36 @@ export default function ConfigProfScreen() {
   const [modalFiltro, setModalFiltro] = useState(false);
   const [modalDetalhes, setModalDetalhes] = useState<Pergunta | null>(null);
   const [erroCampos, setErroCampos] = useState(false);
+  
+  const [modalEditar, setModalEditar] = useState<Pergunta | null>(null);
+
+  const handleSalvarEdicao = async () => {
+    if (!modalEditar) return;
+    const camposVazios = !modalEditar.texto_enunciado || !modalEditar.dica || !modalEditar.alternativa_A || !modalEditar.alternativa_B || !modalEditar.alternativa_C || !modalEditar.alternativa_CORRETA;
+    if (camposVazios) {
+      setErroEdicao(true);
+      return;
+    }
+    setErroEdicao(false);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/perguntas/${modalEditar.idPergunta}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(modalEditar),
+      });
+      if (response.ok) {
+        setModalEditar(null);
+        carregarPerguntas();
+      } else {
+        setErroEdicao(true);
+      }
+    } catch (err) {
+      console.error("Erro ao editar pergunta:", err);
+      setErroEdicao(true);
+    }
+  };
+
+  const [erroEdicao, setErroEdicao] = useState(false);
   const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false);
   const [perguntaParaExcluir, setPerguntaParaExcluir] = useState<Pergunta | null>(null);
 
@@ -106,11 +136,11 @@ const handleCriarPergunta = async () => {
   const camposVazios = !campos.texto_enunciado || !campos.dica || !campos.alternativa_A || !campos.alternativa_B || !campos.alternativa_C || !campos.alternativa_CORRETA;
 
   if (camposVazios) {
-    setErroCampos(true);
+    setErroEdicao(true);
     return;
   }
 
-  setErroCampos(false);
+  setErroEdicao(false);
 
   try {
     const response = await fetch("http://127.0.0.1:8000/perguntas", {
@@ -137,11 +167,11 @@ const handleCriarPergunta = async () => {
     } else {
       const erro = await response.json();
       console.warn("Erro ao salvar:", erro.detail);
-      setErroCampos(true);
+      setErroEdicao(true);
     }
   } catch (err) {
     console.error("Erro na requisição:", err);
-    setErroCampos(true);
+    setErroEdicao(true);
   }
 };
 
@@ -180,7 +210,7 @@ const handleCriarPergunta = async () => {
         keyExtractor={(item) => item.idPergunta.toString()}
         contentContainerStyle={styles.lista}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setModalDetalhes(item)} style={[styles.card, { backgroundColor: tema.cards }]}>
+          <TouchableOpacity onPress={() => setModalEditar(item)} style={[styles.card, { backgroundColor: tema.cards }]}>
             <Text style={[styles.cardTitulo, { color: tema.texto }]}>{item.texto_enunciado}</Text>
             <TouchableOpacity onPress={() => confirmarExclusao(item)} style={{ position: "absolute", top: 6, right: 10 }}>
               <Text style={{ color: '#E60B00', fontSize: 22, fontWeight: 'bold' }}>X</Text>
@@ -249,36 +279,44 @@ const handleCriarPergunta = async () => {
         </View>
       </Modal>
 
-      {/* Modal Visualização */}
-      {modalDetalhes && (
+
+    
+
+      {modalEditar && (
         <Modal visible transparent animationType="fade">
           <View style={styles.modalContainer}>
             <View style={styles.modalBox}>
               <ScrollView>
-                <Text style={styles.modalTitulo}>Detalhes da Pergunta</Text>
-                <Text style={styles.modalLabel}>Enunciado:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.texto_enunciado}</Text>
-                <Text style={styles.modalLabel}>Dica:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.dica}</Text>
-                <Text style={styles.modalLabel}>Ano:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.ano}</Text>
-                <Text style={styles.modalLabel}>Alternativa A:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.alternativa_A}</Text>
-                <Text style={styles.modalLabel}>Alternativa B:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.alternativa_B}</Text>
-                <Text style={styles.modalLabel}>Alternativa C:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.alternativa_C}</Text>
-                <Text style={styles.modalLabel}>Alternativa Correta:</Text>
-                <Text style={styles.modalValor}>{modalDetalhes.alternativa_CORRETA}</Text>
-                <TouchableOpacity onPress={() => setModalDetalhes(null)} style={[styles.modalCancelar, { marginTop: 20 }]}>
-                  <Text style={styles.modalBotaoTexto}>Fechar</Text>
-                </TouchableOpacity>
+                <Text style={styles.modalTitulo}>Editar Pergunta</Text>
+                <TextInput placeholder="Enunciado" style={[styles.modalInput, erroEdicao && !modalEditar.texto_enunciado && styles.inputErro]} value={modalEditar.texto_enunciado} onChangeText={(t) => setModalEditar({ ...modalEditar, texto_enunciado: t })} />
+                <TextInput placeholder="Dica" style={[styles.modalInput, erroEdicao && !modalEditar.dica && styles.inputErro]} value={modalEditar.dica} onChangeText={(t) => setModalEditar({ ...modalEditar, dica: t })} />
+                <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Ano:</Text>
+                <View style={styles.anoContainer}>
+                  {[8, 9, 10, 11, 12].map((a) => (
+                    <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: modalEditar.ano === a ? '#4CAF50' : '#ccc' }]} onPress={() => setModalEditar({ ...modalEditar, ano: a })}>
+                      <Text style={styles.anoTexto}>{a}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <TextInput placeholder="Alternativa A" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_A && styles.inputErro]} value={modalEditar.alternativa_A} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_A: t })} />
+                <TextInput placeholder="Alternativa B" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_B && styles.inputErro]} value={modalEditar.alternativa_B} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_B: t })} />
+                <TextInput placeholder="Alternativa C" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_C && styles.inputErro]} value={modalEditar.alternativa_C} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_C: t })} />
+                <TextInput placeholder="Alternativa Correta" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_CORRETA && styles.inputErro]} value={modalEditar.alternativa_CORRETA} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_CORRETA: t })} />
+                {erroEdicao && <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>Preencha todos os campos.</Text>}
+                <View style={styles.modalBotoes}>
+                  <TouchableOpacity onPress={() => setModalEditar(null)} style={styles.modalCancelar}>
+                    <Text style={styles.modalBotaoTexto}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleSalvarEdicao} style={styles.modalConfirmar}>
+                    <Text style={styles.modalBotaoTexto}>Salvar</Text>
+                  </TouchableOpacity>
+                </View>
               </ScrollView>
             </View>
           </View>
         </Modal>
       )}
-    
+
       <Modal visible={modalConfirmarExclusao} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalBox}>

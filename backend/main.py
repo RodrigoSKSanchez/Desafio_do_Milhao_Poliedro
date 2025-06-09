@@ -290,3 +290,54 @@ def criar_pergunta(pergunta: dict):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception:
         raise HTTPException(status_code=500, detail="Erro ao criar pergunta")
+
+
+from pydantic import Field
+
+class PerguntaEdicao(BaseModel):
+    texto_enunciado: str = Field(..., min_length=1)
+    dica: str = Field(..., min_length=1)
+    ano: int = Field(..., ge=8, le=12)
+    alternativa_A: str = Field(..., min_length=1)
+    alternativa_B: str = Field(..., min_length=1)
+    alternativa_C: str = Field(..., min_length=1)
+    alternativa_CORRETA: str = Field(..., min_length=1)
+
+@Conexao.consultar
+def atualizar_pergunta(cursor, idPergunta: int, pergunta: PerguntaEdicao):
+    cursor.execute(
+        "SELECT 1 FROM Pergunta WHERE idPergunta = %s", (idPergunta,)
+    )
+    if not cursor.fetchone():
+        raise HTTPException(status_code=404, detail="Pergunta não encontrada")
+
+    cursor.execute("""
+        UPDATE Pergunta SET
+            texto_enunciado = %s,
+            dica = %s,
+            ano = %s,
+            alternativa_A = %s,
+            alternativa_B = %s,
+            alternativa_C = %s,
+            alternativa_CORRETA = %s
+        WHERE idPergunta = %s
+    """, (
+        pergunta.texto_enunciado,
+        pergunta.dica,
+        pergunta.ano,
+        pergunta.alternativa_A,
+        pergunta.alternativa_B,
+        pergunta.alternativa_C,
+        pergunta.alternativa_CORRETA,
+        idPergunta
+    ))
+
+@app.put("/perguntas/{idPergunta}")
+def editar_pergunta(idPergunta: int, pergunta: PerguntaEdicao):
+    try:
+        atualizar_pergunta(idPergunta, pergunta)
+        return {"mensagem": "Pergunta atualizada com sucesso"}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Erro ao atualizar pergunta: " + str(e))
