@@ -136,11 +136,11 @@ const handleCriarPergunta = async () => {
   const camposVazios = !campos.texto_enunciado || !campos.dica || !campos.alternativa_A || !campos.alternativa_B || !campos.alternativa_C || !campos.alternativa_CORRETA;
 
   if (camposVazios) {
-    setErroEdicao(true);
+    setErroCampos(true);
     return;
   }
 
-  setErroEdicao(false);
+  setErroCampos(false);
 
   try {
     const response = await fetch("http://127.0.0.1:8000/perguntas", {
@@ -152,8 +152,7 @@ const handleCriarPergunta = async () => {
     });
 
     if (response.ok) {
-      const nova = await response.json();
-      carregarPerguntas();
+      await carregarPerguntas();
       setNovaPergunta({
         texto_enunciado: '',
         dica: '',
@@ -165,15 +164,15 @@ const handleCriarPergunta = async () => {
       });
       setModalCriar(false);
     } else {
-      const erro = await response.json();
-      console.warn("Erro ao salvar:", erro.detail);
-      setErroEdicao(true);
+      console.warn("Erro ao salvar:", await response.text());
+      setErroCampos(true);
     }
   } catch (err) {
     console.error("Erro na requisição:", err);
-    setErroEdicao(true);
+    setErroCampos(true);
   }
 };
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: tema.fundo }]}>
