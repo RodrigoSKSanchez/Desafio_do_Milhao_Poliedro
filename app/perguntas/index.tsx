@@ -249,30 +249,75 @@ const handleCriarPergunta = async () => {
             </TouchableOpacity>
             <ScrollView>
               <Text style={styles.modalTitulo}>Nova Pergunta</Text>
-              <TextInput placeholder="Enunciado" style={[styles.modalInput, erroCampos && !novaPergunta.texto_enunciado && styles.inputErro]} value={novaPergunta.texto_enunciado} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, texto_enunciado: t })} />
-              <TextInput placeholder="Dica" style={[styles.modalInput, erroCampos && !novaPergunta.dica && styles.inputErro]} value={novaPergunta.dica} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, dica: t })} />
-              <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Ano:</Text>
+
+              <Text style={styles.modalLabel}>Enunciado:</Text>
+              <TextInput
+                placeholder="Digite o enunciado"
+                style={[styles.modalInput, erroCampos && !novaPergunta.texto_enunciado && styles.inputErro]}
+                value={novaPergunta.texto_enunciado}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, texto_enunciado: t })}
+              />
+
+              <Text style={styles.modalLabel}>Dica:</Text>
+              <TextInput
+                placeholder="Digite a dica"
+                style={[styles.modalInput, erroCampos && !novaPergunta.dica && styles.inputErro]}
+                value={novaPergunta.dica}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, dica: t })}
+              />
+
+              <Text style={styles.modalLabel}>Ano:</Text>
               <View style={styles.anoContainer}>
                 {[8, 9, 10, 11, 12].map((a) => (
-                  <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: novaPergunta.ano === a ? '#4CAF50' : '#ccc' }]} onPress={() => setNovaPergunta({ ...novaPergunta, ano: a })}>
+                  <TouchableOpacity
+                    key={a}
+                    style={[styles.anoBotao, { backgroundColor: novaPergunta.ano === a ? '#4CAF50' : '#ccc' }]}
+                    onPress={() => setNovaPergunta({ ...novaPergunta, ano: a })}
+                  >
                     <Text style={styles.anoTexto}>{a}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
-              <TextInput placeholder="Alternativa A" style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_A && styles.inputErro]} value={novaPergunta.alternativa_A} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_A: t })} />
-              <TextInput placeholder="Alternativa B" style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_B && styles.inputErro]} value={novaPergunta.alternativa_B} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_B: t })} />
-              <TextInput placeholder="Alternativa C" style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_C && styles.inputErro]} value={novaPergunta.alternativa_C} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_C: t })} />
-              <TextInput placeholder="Alternativa Correta" style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_CORRETA && styles.inputErro]} value={novaPergunta.alternativa_CORRETA} onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_CORRETA: t })} />
+
+              <Text style={styles.modalLabel}>Alternativa A:</Text>
+              <TextInput
+                placeholder="Digite a alternativa A"
+                style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_A && styles.inputErro]}
+                value={novaPergunta.alternativa_A}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_A: t })}
+              />
+
+              <Text style={styles.modalLabel}>Alternativa B:</Text>
+              <TextInput
+                placeholder="Digite a alternativa B"
+                style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_B && styles.inputErro]}
+                value={novaPergunta.alternativa_B}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_B: t })}
+              />
+
+              <Text style={styles.modalLabel}>Alternativa C:</Text>
+              <TextInput
+                placeholder="Digite a alternativa C"
+                style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_C && styles.inputErro]}
+                value={novaPergunta.alternativa_C}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_C: t })}
+              />
+
+              <Text style={styles.modalLabel}>Alternativa Correta:</Text>
+              <TextInput
+                placeholder="Digite a alternativa correta"
+                style={[styles.modalInput, erroCampos && !novaPergunta.alternativa_CORRETA && styles.inputErro]}
+                value={novaPergunta.alternativa_CORRETA}
+                onChangeText={(t) => setNovaPergunta({ ...novaPergunta, alternativa_CORRETA: t })}
+              />
 
               {erroCampos && (
                 <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>Preencha todos os campos.</Text>
               )}
 
-              <View>
-                <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
-                  <Text style={styles.modalBotaoTexto}>Salvar</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={handleCriarPergunta} style={styles.modalConfirmar}>
+                <Text style={styles.modalBotaoTexto}>Salvar</Text>
+              </TouchableOpacity>
             </ScrollView>
           </View>
         </View>
@@ -287,21 +332,72 @@ const handleCriarPergunta = async () => {
             <View style={styles.modalBox}>
               <ScrollView>
                 <Text style={styles.modalTitulo}>Editar Pergunta</Text>
-                <TextInput placeholder="Enunciado" style={[styles.modalInput, erroEdicao && !modalEditar.texto_enunciado && styles.inputErro]} value={modalEditar.texto_enunciado} onChangeText={(t) => setModalEditar({ ...modalEditar, texto_enunciado: t })} />
-                <TextInput placeholder="Dica" style={[styles.modalInput, erroEdicao && !modalEditar.dica && styles.inputErro]} value={modalEditar.dica} onChangeText={(t) => setModalEditar({ ...modalEditar, dica: t })} />
-                <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Ano:</Text>
+
+                <Text style={styles.modalLabel}>Enunciado:</Text>
+                <TextInput
+                  placeholder="Digite o enunciado"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.texto_enunciado && styles.inputErro]}
+                  value={modalEditar.texto_enunciado}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, texto_enunciado: t })}
+                />
+
+                <Text style={styles.modalLabel}>Dica:</Text>
+                <TextInput
+                  placeholder="Digite a dica"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.dica && styles.inputErro]}
+                  value={modalEditar.dica}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, dica: t })}
+                />
+
+                <Text style={styles.modalLabel}>Ano:</Text>
                 <View style={styles.anoContainer}>
                   {[8, 9, 10, 11, 12].map((a) => (
-                    <TouchableOpacity key={a} style={[styles.anoBotao, { backgroundColor: modalEditar.ano === a ? '#4CAF50' : '#ccc' }]} onPress={() => setModalEditar({ ...modalEditar, ano: a })}>
+                    <TouchableOpacity
+                      key={a}
+                      style={[styles.anoBotao, { backgroundColor: modalEditar.ano === a ? '#4CAF50' : '#ccc' }]}
+                      onPress={() => setModalEditar({ ...modalEditar, ano: a })}
+                    >
                       <Text style={styles.anoTexto}>{a}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
-                <TextInput placeholder="Alternativa A" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_A && styles.inputErro]} value={modalEditar.alternativa_A} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_A: t })} />
-                <TextInput placeholder="Alternativa B" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_B && styles.inputErro]} value={modalEditar.alternativa_B} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_B: t })} />
-                <TextInput placeholder="Alternativa C" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_C && styles.inputErro]} value={modalEditar.alternativa_C} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_C: t })} />
-                <TextInput placeholder="Alternativa Correta" style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_CORRETA && styles.inputErro]} value={modalEditar.alternativa_CORRETA} onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_CORRETA: t })} />
-                {erroEdicao && <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>Preencha todos os campos.</Text>}
+
+                <Text style={styles.modalLabel}>Alternativa A:</Text>
+                <TextInput
+                  placeholder="Digite a alternativa A"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_A && styles.inputErro]}
+                  value={modalEditar.alternativa_A}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_A: t })}
+                />
+
+                <Text style={styles.modalLabel}>Alternativa B:</Text>
+                <TextInput
+                  placeholder="Digite a alternativa B"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_B && styles.inputErro]}
+                  value={modalEditar.alternativa_B}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_B: t })}
+                />
+
+                <Text style={styles.modalLabel}>Alternativa C:</Text>
+                <TextInput
+                  placeholder="Digite a alternativa C"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_C && styles.inputErro]}
+                  value={modalEditar.alternativa_C}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_C: t })}
+                />
+
+                <Text style={styles.modalLabel}>Alternativa Correta:</Text>
+                <TextInput
+                  placeholder="Digite a alternativa correta"
+                  style={[styles.modalInput, erroEdicao && !modalEditar.alternativa_CORRETA && styles.inputErro]}
+                  value={modalEditar.alternativa_CORRETA}
+                  onChangeText={(t) => setModalEditar({ ...modalEditar, alternativa_CORRETA: t })}
+                />
+
+                {erroEdicao && (
+                  <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>Preencha todos os campos.</Text>
+                )}
+
                 <View style={styles.modalBotoes}>
                   <TouchableOpacity onPress={() => setModalEditar(null)} style={styles.modalCancelar}>
                     <Text style={styles.modalBotaoTexto}>Cancelar</Text>
@@ -315,6 +411,7 @@ const handleCriarPergunta = async () => {
           </View>
         </Modal>
       )}
+
 
       <Modal visible={modalConfirmarExclusao} transparent animationType="fade">
         <View style={styles.modalContainer}>
