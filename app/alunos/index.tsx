@@ -131,15 +131,31 @@ const ListaAlunos: React.FC = () => {
             </TouchableOpacity>
 
             {perfilAluno ? (
-              <>
-                <Text style={[styles.info, { color: tema.texto }]}>Email: {perfilAluno.email}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Dinheiro: R$ {perfilAluno.dinheiro.toLocaleString()}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Acertos: {perfilAluno.acertos}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Total de Perguntas: {perfilAluno.total}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Dicas: {perfilAluno.dica}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Pulos: {perfilAluno.pula}</Text>
-                <Text style={[styles.info, { color: tema.texto }]}>Eliminações: {perfilAluno.elimina}</Text>
-              </>
+              <View>
+                <Text style={[styles.modalTitulo, { color: tema.texto }]}>Informações do Aluno</Text>
+                <View style={styles.secao}>
+                  <Text style={[styles.info, { color: tema.texto }]}>Email: {perfilAluno.email}</Text>
+                  <Text style={[styles.info, { color: tema.texto }]}>Dinheiro: R$ {perfilAluno.dinheiro.toLocaleString()}</Text>
+                  <Text style={[styles.info, { color: tema.texto }]}>Acertos: {perfilAluno.acertos}</Text>
+                  <Text style={[styles.info, { color: tema.texto }]}>Total de Perguntas: {perfilAluno.total}</Text>
+                </View>
+
+                <Text style={[styles.modalTitulo, { color: tema.texto }]}>Inventário</Text>
+                <View style={styles.inventarioContainer}>
+                  <View style={styles.itemInventario}>
+                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Dicas</Text>
+                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.dica}</Text>
+                  </View>
+                  <View style={styles.itemInventario}>
+                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Pulos</Text>
+                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.pula}</Text>
+                  </View>
+                  <View style={styles.itemInventario}>
+                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Eliminações</Text>
+                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.elimina}</Text>
+                  </View>
+                </View>
+              </View>
             ) : (
               <Text style={[styles.info, { color: tema.texto }]}>Erro ao carregar informações.</Text>
             )}
@@ -172,7 +188,8 @@ const styles = StyleSheet.create({
     width: '85%',
     borderRadius: 16,
     padding: 20,
-    gap: 10
+    gap: 10,
+    maxWidth:400,
   },
   fecharModal: {
     position: 'absolute',
@@ -181,8 +198,37 @@ const styles = StyleSheet.create({
     padding: 6,
     zIndex: 1,
   },
+  modalTitulo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  secao: {
+    gap: 8,
+    marginBottom: 20,
+  },
   info: {
     fontSize: 18,
-    marginTop: 8,
+    marginTop: 4,
+  },
+  inventarioContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 12,
+  },
+  itemInventario: {
+    alignItems: 'center',
+    padding: 8,
+    minWidth: 80,
+  },
+  inventarioTitulo: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  inventarioValor: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
