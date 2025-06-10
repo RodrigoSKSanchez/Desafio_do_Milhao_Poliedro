@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator, StatusBar, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
+  StatusBar,
+  SafeAreaView,
+  Modal,
+} from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +18,16 @@ import { Ionicons } from '@expo/vector-icons';
 interface Aluno {
   idAluno: number;
   usuario_aluno: string;
+}
+
+interface PerfilAluno {
+  email: string;
+  dinheiro: number;
+  acertos: number;
+  total: number;
+  dica: number;
+  pula: number;
+  elimina: number;
 }
 
 const ListaAlunos: React.FC = () => {
@@ -17,6 +38,8 @@ const ListaAlunos: React.FC = () => {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [filtro, setFiltro] = useState('');
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [perfilAluno, setPerfilAluno] = useState<PerfilAluno | null>(null);
 
   const tema = {
     fundo: isDark ? '#000' : '#F7F7F7',
@@ -38,12 +61,26 @@ const ListaAlunos: React.FC = () => {
     carregarAlunos();
   }, []);
 
+  const abrirPerfilAluno = (idAluno: number) => {
+    fetch(`http://localhost:8000/perfil_aluno?idAluno=${idAluno}`)
+      .then(res => res.json())
+      .then(data => {
+        setPerfilAluno(data);
+        setModalVisible(true);
+      })
+      .catch(err => {
+        console.error(err);
+        setPerfilAluno(null);
+        setModalVisible(false);
+      });
+  };
+
   const renderItem = ({ item }: { item: Aluno }) => {
     if (!item.usuario_aluno.toLowerCase().includes(filtro.toLowerCase())) return null;
     return (
       <TouchableOpacity
         style={[styles.card, { backgroundColor: tema.cards }]}
-        onPress={() => router.push(`/alunos/${item.idAluno}`)}
+        onPress={() => abrirPerfilAluno(item.idAluno)}
       >
         <Text style={[styles.nome, { color: tema.texto }]}>{item.usuario_aluno}</Text>
       </TouchableOpacity>
@@ -84,6 +121,31 @@ const ListaAlunos: React.FC = () => {
           contentContainerStyle={styles.lista}
         />
       )}
+
+      {/* Modal de perfil do aluno */}
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { backgroundColor: tema.cards }]}>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.fecharModal}>
+              <Ionicons name="close" size={28} color="#F44" />
+            </TouchableOpacity>
+
+            {perfilAluno ? (
+              <>
+                <Text style={[styles.info, { color: tema.texto }]}>Email: {perfilAluno.email}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Dinheiro: R$ {perfilAluno.dinheiro.toLocaleString()}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Acertos: {perfilAluno.acertos}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Total de Perguntas: {perfilAluno.total}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Dicas: {perfilAluno.dica}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Pulos: {perfilAluno.pula}</Text>
+                <Text style={[styles.info, { color: tema.texto }]}>Eliminações: {perfilAluno.elimina}</Text>
+              </>
+            ) : (
+              <Text style={[styles.info, { color: tema.texto }]}>Erro ao carregar informações.</Text>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -100,4 +162,27 @@ const styles = StyleSheet.create({
   lista: { paddingHorizontal: 20, paddingBottom: 20 },
   card: { padding: 10, borderRadius: 12, marginBottom: 12 },
   nome: { fontSize: 18, fontWeight: '500' },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  modalContainer: {
+    width: '85%',
+    borderRadius: 16,
+    padding: 20,
+    gap: 10
+  },
+  fecharModal: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 6,
+    zIndex: 1,
+  },
+  info: {
+    fontSize: 18,
+    marginTop: 8,
+  },
 });
