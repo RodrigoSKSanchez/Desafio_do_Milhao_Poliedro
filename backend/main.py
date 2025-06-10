@@ -341,3 +341,16 @@ def editar_pergunta(idPergunta: int, pergunta: PerguntaEdicao):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail="Erro ao atualizar pergunta: " + str(e))
+
+@Conexao.consultar
+def obter_todos_alunos(cursor):
+    cursor.execute("SELECT idAluno, usuario_aluno FROM Aluno")
+    return cursor.fetchall()
+
+@app.get("/alunos")
+def listar_alunos():
+    try:
+        alunos = obter_todos_alunos()
+        return [dict(a) for a in alunos]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Erro ao obter alunos: " + str(e))

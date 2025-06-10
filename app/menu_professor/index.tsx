@@ -40,7 +40,7 @@ export default function MenuProfessor(): React.JSX.Element {
             <Ionicons name="help-circle-outline" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, { backgroundColor: tema.alunos }]} onPress={() => router.push('/')}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: tema.alunos }]} onPress={() => router.push('/alunos')}>
             <Text style={[styles.buttonText, { color: '#fff' }]}>Alunos</Text>
             <Ionicons name="people-outline" size={24} color="#fff" />
           </TouchableOpacity>
