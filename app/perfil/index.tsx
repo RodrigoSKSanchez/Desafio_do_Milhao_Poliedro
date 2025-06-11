@@ -16,6 +16,7 @@ type HistoricoItem = {
 export default function PerfilScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [nomeAluno, setNomeAluno] = useState('');
   const [dinheiro, setDinheiro] = useState(0);
   const [acertos, setAcertos] = useState(0);
   const [total, setTotal] = useState(0);
@@ -36,6 +37,12 @@ const [modalInventario, setModalInventario] = useState(false);
       if (nome) setEmail(nome);
       if (!idAluno) return;
 
+    const carregarNome = async () => {
+      const nome = await AsyncStorage.getItem('usuario_aluno');
+      if (nome) setNomeAluno(nome.split('@')[0]);
+    };
+    carregarNome();
+
       const resPerfil = await fetch(`http://localhost:8000/perfil_aluno?idAluno=${idAluno}`);
       const dados = await resPerfil.json();
       setDinheiro(dados.dinheiro);
@@ -50,6 +57,7 @@ const [modalInventario, setModalInventario] = useState(false);
       setHistorico(historicoJson);
     };
     carregarPerfil();
+  
   }, []);
 
   const tema = {
@@ -65,7 +73,7 @@ const [modalInventario, setModalInventario] = useState(false);
     <View style={[styles.container, { backgroundColor: tema.fundo }]}>
       <View style={styles.topBar}>
         <Text style={[styles.title, { color: tema.texto }]}>
-          Olá <Text style={styles.nomeAluno}>{email}</Text>
+          Olá <Text style={styles.nomeAluno}>{nomeAluno}</Text>
         </Text>
         <TouchableOpacity style={[styles.iconButton, { backgroundColor: isDark ? '#333' : '#FDD3E4' }]}>
           <Ionicons name="person-outline" size={24} color={tema.texto} />
