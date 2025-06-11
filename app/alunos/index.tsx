@@ -40,6 +40,12 @@ const ListaAlunos: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [perfilAluno, setPerfilAluno] = useState<PerfilAluno | null>(null);
+  const [modalCadastro, setModalCadastro] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [novoAluno, setNovoAluno] = useState({ usuario: '', senha: '', confirmar: '' });
+  const [erroCadastro, setErroCadastro] = useState('');
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false);
+  const [idParaExcluir, setIdParaExcluir] = useState<number | null>(null);
 
   const tema = {
     fundo: isDark ? '#000' : '#F7F7F7',
@@ -75,15 +81,67 @@ const ListaAlunos: React.FC = () => {
       });
   };
 
+  const handleCadastrarAluno = () => {
+    if (!novoAluno.usuario || !novoAluno.senha || !novoAluno.confirmar) {
+      setErroCadastro('Preencha todos os campos');
+      return;
+    }
+    if (!novoAluno.usuario.endsWith('@p4ed.com')) {
+      setErroCadastro('O usuário deve terminar com "@p4ed.com"');
+      return;
+    }
+    if (novoAluno.senha !== novoAluno.confirmar) {
+      setErroCadastro('As senhas não coincidem');
+      return;
+    }
+
+    fetch('http://localhost:8000/cadastro_aluno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usuario_aluno: novoAluno.usuario,
+        senha_aluno: novoAluno.senha,
+      }),
+    })
+      .then(res => {
+        if (res.ok) {
+          setModalCadastro(false);
+          setNovoAluno({ usuario: '', senha: '', confirmar: '' });
+          setErroCadastro('');
+          carregarAlunos();
+        } else {
+          setErroCadastro('Erro ao cadastrar aluno');
+        }
+      })
+      .catch(() => setErroCadastro('Erro de conexão com o servidor'));
+  };
+
+  const handleExcluirAluno = (id: number) => {
+    fetch(`http://localhost:8000/excluir_aluno?idAluno=${id}`, { method: 'DELETE' })
+      .then(res => {
+        if (res.ok) {
+          setConfirmarExclusao(false);
+          setIdParaExcluir(null);
+          carregarAlunos();
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
   const renderItem = ({ item }: { item: Aluno }) => {
     if (!item.usuario_aluno.toLowerCase().includes(filtro.toLowerCase())) return null;
     return (
-      <TouchableOpacity
-        style={[styles.card, { backgroundColor: tema.cards }]}
-        onPress={() => abrirPerfilAluno(item.idAluno)}
-      >
-        <Text style={[styles.nome, { color: tema.texto }]}>{item.usuario_aluno}</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <TouchableOpacity
+          style={[styles.card, { backgroundColor: tema.cards, flex: 1 }]}
+          onPress={() => abrirPerfilAluno(item.idAluno)}
+        >
+          <Text style={[styles.nome, { color: tema.texto }]}>{item.usuario_aluno}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { setIdParaExcluir(item.idAluno); setConfirmarExclusao(true); }}>
+          <Ionicons name="close-circle" size={28} color="#F44" style={{ marginLeft: 10 }} />
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -96,10 +154,11 @@ const ListaAlunos: React.FC = () => {
           <Ionicons name="arrow-back" size={24} color={tema.texto} />
         </TouchableOpacity>
         <Text style={[styles.titulo, { color: tema.texto }]}>Alunos</Text>
-        <TouchableOpacity onPress={carregarAlunos}>
-          <Ionicons name="reload" size={35} color={tema.texto} />
+        <TouchableOpacity onPress={() => setModalCadastro(true)} style={{ backgroundColor: '#4CAF50', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10 }}>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Cadastrar aluno</Text>
         </TouchableOpacity>
       </View>
+
 
       <View style={styles.filtros}>
         <TextInput
@@ -109,6 +168,9 @@ const ListaAlunos: React.FC = () => {
           value={filtro}
           onChangeText={setFiltro}
         />
+        <TouchableOpacity onPress={carregarAlunos}>
+          <Ionicons name="reload" size={30} color={tema.texto} />
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -122,6 +184,48 @@ const ListaAlunos: React.FC = () => {
         />
       )}
 
+      {/* Modal de cadastro */}
+      <Modal visible={modalCadastro} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { backgroundColor: tema.cards }]}>
+            <TouchableOpacity onPress={() => setModalCadastro(false)} style={styles.fecharModal}>
+              <Ionicons name="close" size={28} color="#F44" />
+            </TouchableOpacity>
+            <Text style={[styles.modalTitulo, { color: tema.texto }]}>Cadastrar Novo Aluno</Text>
+            <TextInput placeholder="Usuário (ex: RA@p4ed.com)" placeholderTextColor="#aaa" style={[styles.input, { color: tema.texto, borderBottomColor: tema.texto }]} value={novoAluno.usuario} onChangeText={(t) => setNovoAluno({ ...novoAluno, usuario: t })} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TextInput placeholder="Senha" placeholderTextColor="#aaa" secureTextEntry={!mostrarSenha} style={[styles.input, { flex: 1, color: tema.texto, borderBottomColor: tema.texto }]} value={novoAluno.senha} onChangeText={(t) => setNovoAluno({ ...novoAluno, senha: t })} />
+              <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
+                <Ionicons name={mostrarSenha ? 'eye-off' : 'eye'} size={24} color={tema.texto} style={{ marginLeft: 10 }} />
+              </TouchableOpacity>
+            </View>
+            <TextInput placeholder="Confirmar Senha" placeholderTextColor="#aaa" secureTextEntry={!mostrarSenha} style={[styles.input, { color: tema.texto, borderBottomColor: tema.texto }]} value={novoAluno.confirmar} onChangeText={(t) => setNovoAluno({ ...novoAluno, confirmar: t })} />
+            {erroCadastro ? <Text style={{ color: 'red', textAlign: 'center' }}>{erroCadastro}</Text> : null}
+            <TouchableOpacity onPress={handleCadastrarAluno} style={[styles.card, { backgroundColor: '#4CAF50', marginTop: 20 }]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal de confirmação de exclusão */}
+      <Modal visible={confirmarExclusao} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { backgroundColor: tema.cards }]}>
+            <Text style={[styles.modalTitulo, { color: tema.texto }]}>Confirmar Exclusão</Text>
+            <Text style={[styles.info, { color: tema.texto }]}>Tem certeza que deseja excluir este aluno?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+              <TouchableOpacity onPress={() => setConfirmarExclusao(false)} style={[styles.card, { backgroundColor: '#AAA' }]}>
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => idParaExcluir && handleExcluirAluno(idParaExcluir)} style={[styles.card, { backgroundColor: '#F44' }]}>
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>Excluir</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Modal de perfil do aluno */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
@@ -129,7 +233,6 @@ const ListaAlunos: React.FC = () => {
             <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.fecharModal}>
               <Ionicons name="close" size={28} color="#F44" />
             </TouchableOpacity>
-
             {perfilAluno ? (
               <View>
                 <Text style={[styles.modalTitulo, { color: tema.texto }]}>Informações do Aluno</Text>
@@ -139,21 +242,11 @@ const ListaAlunos: React.FC = () => {
                   <Text style={[styles.info, { color: tema.texto }]}>Acertos: {perfilAluno.acertos}</Text>
                   <Text style={[styles.info, { color: tema.texto }]}>Total de Perguntas: {perfilAluno.total}</Text>
                 </View>
-
                 <Text style={[styles.modalTitulo, { color: tema.texto }]}>Inventário</Text>
                 <View style={styles.inventarioContainer}>
-                  <View style={styles.itemInventario}>
-                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Dicas</Text>
-                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.dica}</Text>
-                  </View>
-                  <View style={styles.itemInventario}>
-                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Pulos</Text>
-                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.pula}</Text>
-                  </View>
-                  <View style={styles.itemInventario}>
-                    <Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Eliminações</Text>
-                    <Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.elimina}</Text>
-                  </View>
+                  <View style={styles.itemInventario}><Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Dicas</Text><Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.dica}</Text></View>
+                  <View style={styles.itemInventario}><Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Pulos</Text><Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.pula}</Text></View>
+                  <View style={styles.itemInventario}><Text style={[styles.inventarioTitulo, { color: tema.texto }]}>Eliminações</Text><Text style={[styles.inventarioValor, { color: tema.texto }]}>{perfilAluno.elimina}</Text></View>
                 </View>
               </View>
             ) : (
@@ -189,7 +282,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     gap: 10,
-    maxWidth:400,
+    maxWidth: 400,
   },
   fecharModal: {
     position: 'absolute',

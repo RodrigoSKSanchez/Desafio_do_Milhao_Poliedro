@@ -54,12 +54,14 @@ export default function HomeScreen(): React.JSX.Element {
           <Text style={styles.buttonText}>Login Professor</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        {/* Tela de cadastro antiga */}
+        {/* <TouchableOpacity 
           style={styles.button}
           onPress={handleCadastroPress}
         >
           <Text style={styles.buttonText}>Cadastro</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
       </View>
     </SafeAreaView>
   );

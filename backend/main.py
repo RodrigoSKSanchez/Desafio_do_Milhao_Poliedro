@@ -354,3 +354,20 @@ def listar_alunos():
         return [dict(a) for a in alunos]
     except Exception as e:
         raise HTTPException(status_code=500, detail="Erro ao obter alunos: " + str(e))
+
+@app.post("/cadastro_aluno")
+def cadastrar_aluno_alias(aluno: AlunoCadastro):
+    return cadastrar_aluno(aluno)
+
+@Conexao.consultar
+def deletar_aluno(cursor, idAluno: int):
+    cursor.execute("DELETE FROM Historico WHERE idAluno = %s", (idAluno,))
+    cursor.execute("DELETE FROM Aluno WHERE idAluno = %s", (idAluno,))
+
+@app.delete("/excluir_aluno")
+def excluir_aluno(idAluno: int):
+    try:
+        deletar_aluno(idAluno)
+        return {"mensagem": "Aluno excluído com sucesso"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir aluno: {str(e)}")
