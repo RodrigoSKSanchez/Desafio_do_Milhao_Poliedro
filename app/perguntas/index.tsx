@@ -209,13 +209,27 @@ const handleCriarPergunta = async () => {
         keyExtractor={(item) => item.idPergunta.toString()}
         contentContainerStyle={styles.lista}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setModalEditar(item)} style={[styles.card, { backgroundColor: tema.cards }]}>
-            <Text style={[styles.cardTitulo, { color: tema.texto }]}>{item.texto_enunciado}</Text>
-            <TouchableOpacity onPress={() => confirmarExclusao(item)} style={{ position: "absolute", top: 6, right: 10 }}>
-              <Text style={{ color: '#E60B00', fontSize: 22, fontWeight: 'bold' }}>X</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                onPress={() => setModalEditar(item)}
+                style={[styles.card, { backgroundColor: tema.cards }]}
+              >
+                <Text style={[styles.cardTitulo, { color: tema.texto }]}>
+                  {item.texto_enunciado}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => { setPerguntaParaExcluir(item); setModalConfirmarExclusao(true); }}
+              style={{ alignSelf: 'center' }}
+            >
+              <Ionicons name="close-circle" size={28} color="#F44" />
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         )}
+
       />
 
       {/* Modal Filtro */}
@@ -413,21 +427,24 @@ const handleCriarPergunta = async () => {
       )}
 
 
-      <Modal visible={modalConfirmarExclusao} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitulo}>Você tem certeza que deseja deletar essa pergunta?</Text>
-            <View>
-              <TouchableOpacity onPress={excluirPergunta} style={{ backgroundColor: '#E60B00', padding: 12, borderRadius: 8, alignItems: 'center', marginBottom: 10 }}>
-                <Text style={styles.modalBotaoTexto}>Confirmar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalConfirmarExclusao(false)} style={{ backgroundColor: '#CCC', padding: 10, borderRadius: 8, alignItems: 'center' }}>
-                <Text style={styles.modalBotaoTexto}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      
+<Modal visible={modalConfirmarExclusao} transparent animationType="fade">
+  <View style={styles.modalOverlay}>
+    <View style={[styles.modalContainerE, { backgroundColor: tema.cards }]}>
+      <Text style={[styles.modalTitulo, { color: tema.texto }]}>Confirmar Exclusão</Text>
+      <Text style={[styles.info, { color: tema.texto }]}>Tem certeza que deseja excluir esta pergunta?</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+        <TouchableOpacity onPress={() => setModalConfirmarExclusao(false)} style={[styles.card, { backgroundColor: '#AAA' }]}>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={excluirPergunta} style={[styles.card, { backgroundColor: '#F44' }]}>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Excluir</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+    
 
     </SafeAreaView>
   );
@@ -458,4 +475,24 @@ const styles = StyleSheet.create({
   modalBotaoTexto: { color: '#FFF', fontWeight: 'bold' },
   modalFechar: { position: 'absolute', right: 12, top: 10, zIndex: 10 },
   inputErro: { borderColor: 'red', borderBottomWidth: 2 },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  info: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+
+    modalContainerE: {
+    width: '85%',
+    borderRadius: 16,
+    padding: 20,
+    gap: 10,
+    maxWidth: 400,
+  },
 });
